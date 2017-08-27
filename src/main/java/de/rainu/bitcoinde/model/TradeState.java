@@ -16,19 +16,19 @@ package de.rainu.bitcoinde.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
- * Diese Option wirkt sich nur bei type='sell' aus! 1 => Express-Only 2 => SEPA-Only 3 => Express & SEPA Bei type='buy' ist Ihre Vorgabe unter 'Express-Handel-Einstellungen' (bei ausreichender Reservierung!) maßgeblich
+ * Trade status
  */
-public enum PaymentOption {
+public enum TradeState {
   
-  EXPRESS_ONLY(1),
+  CANCELLED("-1"),
   
-  SEPA_ONLY(2),
+  PENDING("0"),
   
-  EXPRESS_AND_SEPA(3);
+  SUCCESSFUL("1");
 
-  private Integer value;
+  private String value;
 
-  PaymentOption(Integer value) {
+  TradeState(String value) {
     this.value = value;
   }
 
@@ -38,8 +38,8 @@ public enum PaymentOption {
   }
 
   @JsonCreator
-  public static PaymentOption fromValue(String text) {
-    for (PaymentOption b : PaymentOption.values()) {
+  public static TradeState fromValue(String text) {
+    for (TradeState b : TradeState.values()) {
       if (String.valueOf(b.value).equals(text)) {
         return b;
       }

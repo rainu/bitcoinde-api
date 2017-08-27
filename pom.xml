@@ -102,6 +102,91 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation><activeByDefault>true</activeByDefault></activation>
+    </profile>
+
+    <profile>
+      <id>codeGen</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-codegen-maven-plugin</artifactId>
+            <version>2.2.2</version>
+            <executions>
+              <execution>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+                <configuration>
+                  <inputSpec>src/main/resources/api-spec.yaml</inputSpec>
+                  <output>${project.build.directory}/swagger</output>
+                  <apiPackage>${project.groupId}.endpoints</apiPackage>
+                  <modelPackage>${project.groupId}.model</modelPackage>
+                  <language>java</language>
+                  <configOptions>
+                    <dateLibrary>joda</dateLibrary>
+                  </configOptions>
+                  <library>jersey2</library>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.0.2</version>
+            <executions>
+              <execution>
+                <id>copy-sources</id>
+                <!-- here the phase you need -->
+                <phase>initialize</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${project.build.directory}/swagger/src/main/java/</directory>
+                      <filtering>false</filtering>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.8</version>
+            <executions>
+              <execution>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <delete>
+                      <fileset dir="${project.build.directory}/swagger/" includes="**/*.java"/>
+                    </delete>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
   <build>
     <plugins>
       <plugin>
@@ -112,73 +197,6 @@
           <source>1.8</source>
           <target>1.8</target>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-codegen-maven-plugin</artifactId>
-        <version>2.2.2</version>
-        <executions>
-          <execution>
-            <phase>initialize</phase>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-            <configuration>
-              <inputSpec>src/main/resources/api-spec.yaml</inputSpec>
-              <output>${project.build.directory}/swagger</output>
-              <apiPackage>${project.groupId}.endpoints</apiPackage>
-              <modelPackage>${project.groupId}.model</modelPackage>
-              <language>java</language>
-              <configOptions>
-                <dateLibrary>joda</dateLibrary>
-              </configOptions>
-              <library>jersey2</library>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>3.0.2</version>
-        <executions>
-          <execution>
-            <id>copy-sources</id>
-            <!-- here the phase you need -->
-            <phase>initialize</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${project.build.directory}/swagger/src/main/java/</directory>
-                  <filtering>false</filtering>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.8</version>
-        <executions>
-          <execution>
-            <phase>initialize</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target>
-                <delete>
-                  <fileset dir="${project.build.directory}/swagger/" includes="**/*.java"/>
-                </delete>
-              </target>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

@@ -55,1118 +55,754 @@ responses:
   429:
     description: "Zu viele Requests"
 
-paths:
-  /orders:
-    get:
-      tags:
-        - "orders"
-      operationId: "showOrderbook"
-      description: "Durchsuchen des Orderbooks nach passenden Angeboten"
-      parameters:
-      - name: "type"
-        in: "query"
-        description: "Angebots-Typ. 'buy' liefert Verkaufsangebote, 'sell' Kaufangebote"
-        required: true
-        type: "string"
-        enum:
-        - buy
-        - sell
-      - name: "amount"
-        in: "query"
-        description: "Menge der Bitcoins"
-        required: false
-        type: "number"
-        format: "float"
-      - name: "price"
-        in: "query"
-        description: "Preis pro Bitcoin in Euro. Entspricht bei 'buy' dem maximalen Kaufpreis und bei 'sell' dem minimalen Verkaufspreis."
-        required: false
-        type: "number"
-        format: "float"
-      - name: "order_requirements_fullfilled"
-        in: "query"
-        description: "Nur Angebote anzeigen, deren Anforderungen ich erfülle (bspw. Legitimationsstatus, Trust-Level, Sitz der Bank, Zahlungsart)."
-        required: false
-        type: "integer"
-        default: 0
-      - name: "only_kyc_full"
-        in: "query"
-        description: "Nur Angebote von vollständig identifizierten Usern anzeigen."
-        required: false
-        type: "integer"
-        default: 0
-      - name: "only_express_orders"
-        in: "query"
-        description: "Nur Angebote anzeigen, die über Express-Handel gehandelt werden können."
-        required: false
-        type: "integer"
-        default: 1
-      - name: "only_same_bankgroup"
-        in: "query"
-        description: "Nur Angebote von Handelspartner anzeigen, die ein Bankkonto bei derselben Bankgruppe (BIC-Nummernkreis) wie ich haben."
-        required: false
-        type: "integer"
-        default: 0
-      - name: "only_same_bic"
-        in: "query"
-        description: "Nur Angebote von Handelspartnern anzeigen, die ein Bankkonto bei derselben Bank wie ich haben."
-        required: false
-        type: "integer"
-        default: 0
-      - name: "seat_of_bank"
-        in: "query"
-        description: "Nur Angebote mit bestimmtem Sitz der Bank anzeigen. (ISO 3166-2)."
-        required: false
+definitions:
+  PaymentOption:
+    type: "integer"
+    default: 1
+    description: "Diese Option wirkt sich nur bei type='sell' aus!
+
+                  1 => Express-Only
+                  2 => SEPA-Only
+                  3 => Express & SEPA
+
+                  Bei type='buy' ist Ihre Vorgabe unter 'Express-Handel-Einstellungen' (bei ausreichender Reservierung!) maßgeblich"
+    enum: &paymentOption
+      - 1
+      - 2
+      - 3
+
+  BankList:
+    type: "string"
+    description: "Bankenländerliste"
+    enum: &bankList
+    - "AT" #Österreich
+    - "BE" #Belgien
+    - "BG" #Bulgarien
+    - "CH" #Schweiz
+    - "CY" #Zypern
+    - "CZ" #Tschechische Republik
+    - "DE" #Deutschland
+    - "DK" #Dänemark
+    - "EE" #Estland
+    - "ES" #Spanien
+    - "FI" #Finnland
+    - "FR" #Frankreich
+    - "GB" #Großbritannien
+    - "GR" #Griechenland
+    - "HR" #Kroatien
+    - "HU" #Ungarn
+    - "IE" #Irland
+    - "IS" #Island
+    - "IT" #Italien
+    - "LI" #Liechtenstein
+    - "LT" #Litauen
+    - "LU" #Luxemburg
+    - "LV" #Lettland
+    - "MT" #Malta
+    - "MQ" #Martinique
+    - "NL" #Niederlande
+    - "NO" #Norwegen
+    - "PL" #Polen
+    - "PT" #Portugal
+    - "RO" #Rumänien
+    - "SE" #Schweden
+    - "SI" #Slowenien
+    - "SK" #Slowakei
+
+  TrustLevel:
+    type: "string"
+    description: "Trust-Level"
+    enum:
+      - bronze
+      - silver
+      - gold
+      - platin
+
+  BuyOrSell:
+    type: "string"
+    description: "Kaufen oder Verkaufen"
+    enum: &buyOrSell
+      - buy
+      - sell
+
+  OrderState:
+    type: "string"
+    description: "Order status"
+    enum: &orderState
+      - -2 #Expired
+      - -1 #Cancelled
+      - 0 #Pending
+
+  TradeState:
+    type: "string"
+    description: "Trade status"
+    enum: &tradeState
+      - -1 #Cancelled
+      - 0 #Pending
+      - 1 #Successful
+
+  TradingPair:
+    type: "string"
+    description: "Handelspaare"
+    enum: &tradingPair
+      - btceur #BTC/EUR
+      - bcheur #BCH/EUR
+
+  TradingPartnerRating:
+    type: "string"
+    description: "Bewertung vom Handelspartner"
+    enum: &tradingPartnerRating
+      - pending
+      - negative
+      - neutral
+      - positive
+
+  PositionType:
+    type: "string"
+    description: "Positionstyp"
+    enum: &positionType
+      - all
+      - buy
+      - sell
+      - inpayment
+      - payout
+      - affiliate
+      - welcome_btc
+      - buy_yubikey
+      - buy_goldshop
+      - buy_diamondshop
+      - kickback
+      - outgoing_fee_voluntary
+
+  ######
+  # Responses
+  ######
+  GeneralResponse:
+    type: "object"
+    properties:
+      errors:
         type: "array"
         items:
-          type: "string"
-          enum:
-          - "AT" #Österreich
-          - "BE" #Belgien
-          - "BG" #Bulgarien
-          - "CH" #Schweiz
-          - "CY" #Zypern
-          - "CZ" #Tschechische Republik
-          - "DE" #Deutschland
-          - "DK" #Dänemark
-          - "EE" #Estland
-          - "ES" #Spanien
-          - "FI" #Finnland
-          - "FR" #Frankreich
-          - "GB" #Großbritannien
-          - "GR" #Griechenland
-          - "HR" #Kroatien
-          - "HU" #Ungarn
-          - "IE" #Irland
-          - "IS" #Island
-          - "IT" #Italien
-          - "LI" #Liechtenstein
-          - "LT" #Litauen
-          - "LU" #Luxemburg
-          - "LV" #Lettland
-          - "MT" #Malta
-          - "MQ" #Martinique
-          - "NL" #Niederlande
-          - "NO" #Norwegen
-          - "PL" #Polen
-          - "PT" #Portugal
-          - "RO" #Rumänien
-          - "SE" #Schweden
-          - "SI" #Slowenien
-          - "SK" #Slowakei
-        collectionFormat: "multi"
-      responses:
-        200:
-          description: "Gefundene Angebote"
-          schema:
+          $ref: "#/definitions/Error"
+      credits:
+        type: "integer"
+        description: "Restliches Credit-Kontingent"
+
+  ShowOrderbookResponse:
+    type: "object"
+    properties:
+      orders:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            order_id:
+              type: "string"
+              description: "ID des Angebots"
+            type:
+              $ref: "#/definitions/BuyOrSell"
+            max_amount:
+              type: "number"
+              format: "float"
+              description: "Maximal handelbare BTC-Menge"
+            min_amount:
+              type: "number"
+              format: "float"
+              description: "Mindestens handelbare BTC-Menge"
+            price:
+              type: "number"
+              format: "float"
+              description: "Preis pro BTC in Euro"
+            max_volume:
+              type: "number"
+              format: "float"
+              description: "Max. Euro-Volumen der Order"
+            min_volume:
+              type: "number"
+              format: "float"
+              description: "Min. Euro-Volumen der Order"
+            order_requirements_fullfilled:
+              type: "boolean"
+              description: "Zeigt an, ob das Angebot bedient werden könnte oder nicht (Trust-Level, KYC-Full, Sitz der Bank etc.)."
+            trading_partner_information:
+              description: "Infos zum User des Angebots"
+              $ref: "#/definitions/TradingPartner"
+            order_requirements:
+              $ref: "#/definitions/OrderRequirement"
+      errors:
+        type: "array"
+        items:
+          $ref: "#/definitions/Error"
+      credits:
+        type: "integer"
+        description: "Restliches Credit-Kontingent"
+
+  CreateOrderResponse:
+    type: "object"
+    properties:
+      order_id:
+        type: "string"
+      errors:
+        type: "array"
+        items:
+          $ref: "#/definitions/Error"
+      credits:
+        type: "integer"
+        description: "Restliches Credit-Kontingent"
+
+  ShowMyOrderDetailsResponse:
+    type: "object"
+    properties:
+      order:
+        type: "object"
+        properties:
+          order_id:
+            type: "string"
+            description: "ID des Angebots"
+          type:
+            $ref: "#/definitions/BuyOrSell"
+          max_amount:
+            type: "number"
+            format: "float"
+            description: "Maximal handelbare BTC-Menge"
+          min_amount:
+            type: "number"
+            format: "float"
+            description: "Mindestens handelbare BTC-Menge"
+          price:
+            type: "number"
+            format: "float"
+            description: "Preis pro BTC in Euro"
+          max_volume:
+            type: "number"
+            format: "float"
+            description: "Max. Euro-Volumen der Order"
+          min_volume:
+            type: "number"
+            format: "float"
+            description: "Min. Euro-Volumen der Order"
+          end_datetime:
+            type: "string"
+            format: "date-time"
+            description: "Ablaufzeitpunkt des Angebots. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
+          new_order_for_remaining_amount:
+            type: "boolean"
+            description: "Neues Angebot mit Restmenge anlegen, wenn nur eine Teilmenge aus dem Angebot bedient wurde."
+          state:
+            type: "integer"
+            description: "Aktueller Status"
+            enum: *orderState
+          order_requirements:
+            type: "array"
+            items:
+              $ref: "#/definitions/OrderRequirement"
+          created_at:
+            type: "string"
+            format: "date-time"
+            description: "Erstellzeitpunkt des Angebots. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
+      errors:
+        type: "array"
+        items:
+          $ref: "#/definitions/Error"
+      credits:
+        type: "integer"
+        description: "Restliches Credit-Kontingent"
+
+  DeleteOrderResponse:
+    type: "object"
+    properties:
+      errors:
+        type: "array"
+        items:
+          $ref: "#/definitions/Error"
+      credits:
+        type: "integer"
+        description: "Restliches Credit-Kontingent"
+
+  ShowMyOrdersResponse:
+    type: "object"
+    properties:
+      orders:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            order_id:
+              type: "string"
+              description: "ID des Angebots"
+            type:
+              $ref: "#/definitions/BuyOrSell"
+            max_amount:
+              type: "number"
+              format: "float"
+              description: "Maximal handelbare BTC-Menge"
+            min_amount:
+              type: "number"
+              format: "float"
+              description: "Mindestens handelbare BTC-Menge"
+            price:
+              type: "number"
+              format: "float"
+              description: "Preis pro BTC in Euro"
+            max_volume:
+              type: "number"
+              format: "float"
+              description: "Max. Euro-Volumen der Order"
+            min_volume:
+              type: "number"
+              format: "float"
+              description: "Min. Euro-Volumen der Order"
+            end_datetime:
+              type: "string"
+              format: "date-time"
+              description: "Ablaufzeitpunkt des Angebots. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
+            new_order_for_remaining_amount:
+              type: "boolean"
+              description: "Neues Angebot mit Restmenge anlegen, wenn nur eine Teilmenge aus dem Angebot bedient wurde."
+            state:
+              type: "integer"
+              description: "Aktueller Status"
+              enum: *orderState
+            order_requirements:
+              type: "array"
+              items:
+                $ref: "#/definitions/OrderRequirement"
+            created_at:
+              type: "string"
+              format: "date-time"
+              description: "Erstellzeitpunkt des Angebots. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
+      page:
+        $ref: "#/definitions/Page"
+      errors:
+        type: "array"
+        items:
+          $ref: "#/definitions/Error"
+      credits:
+        type: "integer"
+        description: "Restliches Credit-Kontingent"
+
+  ShowMyTradeDetailsResponse:
+    type: "object"
+    properties:
+      trade:
+        type: "object"
+        properties:
+          trade_id:
+            type: "string"
+            description: "ID des Trades"
+          trading_pair:
+            type: "string"
+            enum: *tradingPair
+            description: "Handelspaar"
+          type:
+            $ref: "#/definitions/BuyOrSell"
+          max_amount:
+            type: "number"
+            format: "float"
+            description: "Maximal handelbare BTC-Menge"
+          amount:
+            type: "number"
+            format: "float"
+            description: "Gekaufe/verkaufte Coin-Menge"
+          price:
+            type: "number"
+            format: "float"
+            description: "Preis pro BTC in Euro"
+          volume:
+            type: "number"
+            format: "float"
+            description: "Euro-Volumen des Trades"
+          fee_eur:
+            type: "number"
+            format: "float"
+            description: "Gebühr in Euro"
+          fee_btc:
+            type: "number"
+            format: "float"
+            description: "Gebühr in BTC
+                          (Gebühren-Wert wird nur bei Trades mit dem Handelspaar 'btceur' angegeben, andernfalls beträgt der Gebühren-Wert 0)"
+          fee_currency:
+            type: "number"
+            format: "float"
+            description: "Gebühr in Kryptowährung des jeweiligen Handelspaars"
+          new_order_id_for_remaining_amount:
+            type: "string"
+            description: "ID des neuen Angebots, das automatisch für die Rest-Coin-Menge erstellt wurde."
+          state:
+            type: "integer"
+            description: "Aktueller Status"
+            enum: *orderState
+          my_rating_for_trading_partner:
+            type: "string"
+            enum: *tradingPartnerRating
+            description: "Bewertung vom Handelspartner"
+          trading_partner_information:
+            $ref: "#/definitions/TradingPartner"
+          created_at:
+            type: "string"
+            format: "date-time"
+            description: "Erstellzeitpunkt des Trades. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
+          successfully_finished_at:
+            type: "string"
+            format: "date-time"
+            description: "Nur beim State 1 (Successful).
+                          Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
+          cancelled_at:
+            type: "string"
+            format: "date-time"
+            description: "Nur beim State -1 (Cancelled).
+                          Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
+          payment_method:
+            type: "integer"
+            enum: *paymentOption
+            description: "1 => SEPA; 2 Express"
+      errors:
+        type: "array"
+        items:
+          $ref: "#/definitions/Error"
+      credits:
+        type: "integer"
+        description: "Restliches Credit-Kontingent"
+
+  ExecuteTradeResponse:
+    type: "object"
+    properties:
+      errors:
+        type: "array"
+        items:
+          $ref: "#/definitions/Error"
+      credits:
+        type: "integer"
+        description: "Restliches Credit-Kontingent"
+
+  ShowMyTradesResponse:
+    type: "object"
+    properties:
+      trades:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            trade_id:
+              type: "string"
+              description: "ID des Trades"
+            trading_pair:
+              type: "string"
+              description: "Handelspaar"
+              enum: *tradingPair
+            type:
+              type: "string"
+              description: "Typ des Trades"
+              enum: *buyOrSell
+            amount:
+              type: "number"
+              format: "float"
+              description: "Gekaufe/verkaufte Coin-Menge"
+            price:
+              type: "number"
+              format: "float"
+              description: "Preis pro Coin in Euro"
+            volume:
+              type: "number"
+              format: "float"
+              description: "Euro-Volumen des Trades"
+            fee_eur:
+              type: "number"
+              format: "float"
+              description: "Gebühr in Euro"
+            fee_btc:
+              type: "number"
+              format: "float"
+              description: "Gebühr in BTC (Gebühren-Wert wird nur bei Trades mit dem Handelspaar 'btceur' angegeben, andernfalls beträgt der Gebühren-Wert 0)"
+            fee_currency:
+              type: "number"
+              format: "float"
+              description: "Gebühr in Kryptowährung des jeweiligen Handelspaars"
+            new_order_id_for_remaining_amount:
+              type: "string"
+              description: "ID des neuen Angebots, das automatisch für die Rest-Coin-Menge erstellt wurde."
+            state:
+              type: "integer"
+              enum: *tradeState
+              description: "Aktueller Status"
+            my_rating_for_trading_partner:
+              type: "string"
+              enum: *tradingPartnerRating
+              description: "Bewertung vom Handelspartner"
+            trading_partner_information:
+              type: "object"
+              properties:
+                username:
+                  type: "string"
+                  description: "User-Name"
+                is_kyc_full:
+                  type: "boolean"
+                  description: "Vollständig identifizierter User"
+                trust_level:
+                  $ref: "#/definitions/TrustLevel"
+                bank_name:
+                  type: "string"
+                  description: "Name der Bank"
+                bic:
+                  type: "string"
+                  description: "BIC der Bank"
+                seat_of_bank:
+                  $ref: "#/definitions/BankList"
+                amount_trades:
+                  type: "integer"
+                  description: "Anzahl bereits getätigten Trades"
+                rating:
+                  type: "integer"
+                  description: "Prozentualer Anteil an positiven Bewertungen durch die Handelspartner"
+            created_at:
+              type: "string"
+              format: "date-time"
+              description: "Erstellzeitpunkt des Trades. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
+            successfully_finished_at:
+              type: "string"
+              format: "date-time"
+              description: "Nur beim State 1 (Successful).
+                            Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
+            cancelled_at:
+              type: "string"
+              format: "date-time"
+              description: "Nur beim State -1 (Cancelled).
+                            Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
+            payment_method:
+              type: "integer"
+              enum: *paymentOption
+              description: "1 => SEPA; 2 Express"
+      page:
+        $ref: "#/definitions/Page"
+      errors:
+        type: "array"
+        items:
+          $ref: "#/definitions/Error"
+      credits:
+        type: "integer"
+        description: "Restliches Credit-Kontingent"
+
+  ShowAccountInfoResponse:
+    type: "object"
+    properties:
+      data:
+        type: "object"
+        properties:
+          btc_balance:
+            description: "Infos zur BTC-Balance"
             type: "object"
             properties:
-              orders:
-                type: "array"
-                items:
-                  type: "object"
-                  properties:
-                    order_id:
-                      type: "string"
-                      description: "ID des Angebots"
-                    type:
-                      $ref: "#/definitions/BuyOrSell"
-                    max_amount:
-                      type: "number"
-                      format: "float"
-                      description: "Maximal handelbare BTC-Menge"
-                    min_amount:
-                      type: "number"
-                      format: "float"
-                      description: "Mindestens handelbare BTC-Menge"
-                    price:
-                      type: "number"
-                      format: "float"
-                      description: "Preis pro BTC in Euro"
-                    max_volume:
-                      type: "number"
-                      format: "float"
-                      description: "Max. Euro-Volumen der Order"
-                    min_volume:
-                      type: "number"
-                      format: "float"
-                      description: "Min. Euro-Volumen der Order"
-                    order_requirements_fullfilled:
-                      type: "boolean"
-                      description: "Zeigt an, ob das Angebot bedient werden könnte oder nicht (Trust-Level, KYC-Full, Sitz der Bank etc.)."
-                    trading_partner_information:
-                      description: "Infos zum User des Angebots"
-                      $ref: "#/definitions/TradingPartner"
-                    order_requirements:
-                      $ref: "#/definitions/OrderRequirement"
-              errors:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Error"
-              credits:
-                type: "integer"
-                description: "Restliches Credit-Kontingent"
-        403:
-          description: "Forbidden"
-        404:
-          description: "Angefragte Entität konnte nicht gefunden werden"
-        422:
-          description: "Anfrage konnte nicht erfolgreich durchgeführt werden. Für weitere Gründe bitte die im Response aufgeführten Fehler im Array-Eintrag 'errors' untersuchen."
-        429:
-          description: "Zu viele Requests"
-
-    post:
-      tags:
-        - "orders"
-      operationId: "createOrder"
-      description: "Anlegen einer neuen Order"
-      consumes:
-      - "application/x-www-form-urlencoded"
-      parameters:
-      - name: "type"
-        type: "string"
-        in: "formData"
-      - name: "max_amount"
-        in: "formData"
-        type: "number"
-        format: "float"
-        description: "Maximale Menge der zu handelnden Bitcoins"
-      - name: "price"
-        in: "formData"
-        type: "number"
-        format: "float"
-        description: "Preis pro Bitcoin in Euro"
-      - name: "min_amount"
-        type: "number"
-        in: "formData"
-        format: "float"
-        default: "max_amount/2"
-        description: "Mindest-Menge der zu handelnden Bitcoins"
-      - name: "end_datetime"
-        type: "string"
-        in: "formData"
-        format: "date-time"
-        default: "aktuelles Datum + 5 Tage"
-        description: "Enddatum (mindestens 5 Tage in der Zukunft) des Angebots.
-                      Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00).
-                      Zulässige Werte für die Minuten sind: 00, 15 , 30, 45"
-      - name: "new_order_for_remaining_amount"
-        type: "integer"
-        in: "formData"
-        default: 0
-        description: "Neues Angebot mit Restmenge anlegen, wenn nur eine Teilmenge aus dem Angebot bedient wurde."
-      - name: "min_trust_level"
-        in: "formData"
-        type: "string"
-      - name: "only_kyc_full"
-        type: "integer"
-        in: "formData"
-        default: 0
-        description: "Handelspartner muss vollständig identifiziert sein."
-      - name: "payment_option"
-        in: "formData"
-        type: "string"
-      - name: "seat_of_bank"
-        in: "formData"
-        description: "Erlaubte Länder, in denen die Bank des Handelspartners ihren Sitz haben darf (ISO 3166-2"
-        type: "string"
-      responses:
-        201:
-          description: "Die ID des angelegten Angebots."
-          schema:
-            properties:
-              order_id:
+              total_amount:
                 type: "string"
-              errors:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Error"
-              credits:
-                type: "integer"
-                description: "Restliches Credit-Kontingent"
-          headers:
-            Location:
-              description: "Die ID des angelegten Angebots."
+                description: "Aktuelles BTC-Guthaben"
+              available_amount:
+                type: "string"
+                description: "Aktuell verfügbares BTC-Guthaben"
+              reserved_amount:
+                type: "string"
+                description: "Aktuell reserviertes BTC-Guthaben"
+          fidor_reservation:
+            description: "Infos zur ggfs. vorhandenen Fidor-Reservierung"
+            type: "object"
+            properties:
+              total_amount:
+                type: "number"
+                format: "float"
+                description: "Gesambetrag der Reservierung"
+              available_amount:
+                type: "number"
+                format: "float"
+                description: "Aktuell verfügbarer Betrag der Reservierung"
+              reserved_at:
+                type: "string"
+                format: "date-time"
+                description: "Erstelldatum der Reservierung (Format: 2015-04-07T12:23:04+02:00 gemäß RFC 3339"
+              valid_until:
+                type: "string"
+                format: "date-time"
+                description: "Reservierung gültig bis (Format: 2015-04-07T12:23:04+02:00 gemäß RFC 3339)"
+          encrypted_information:
+            description: "Verschlüsselte Infos"
+            type: "object"
+            properties:
+              bic_short:
+                type: "string"
+                description: "Verschlüsselte Bankengruppe aus der BIC (ersten 4 Zeichen)"
+              bic_full:
+                type: "string"
+                description: "Verschlüsselte komplette BIC"
+              uid:
+                type: "string"
+                description: "Verschlüsselte eigene User-Id"
+      errors:
+        type: "array"
+        items:
+          $ref: "#/definitions/Error"
+      credits:
+        type: "integer"
+        description: "Restliches Credit-Kontingent"
+
+  ShowOrderbookCompactResponse:
+    type: "object"
+    properties:
+      orders:
+        type: "object"
+        description: "Array mit Bids / Asks"
+        properties:
+          bids:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                price:
+                  type: "number"
+                  format: "float"
+                  description: "Preis pro Bitcoin (Euro)"
+                amount:
+                  type: "number"
+                  format: "float"
+                  description: "Anzahl BTC"
+          asks:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                price:
+                  type: "number"
+                  format: "float"
+                  description: "Preis pro Bitcoin (Euro)"
+                amount:
+                  type: "number"
+                  format: "float"
+                  description: "Anzahl BTC"
+      errors:
+        type: "array"
+        items:
+          $ref: "#/definitions/Error"
+      credits:
+        type: "integer"
+        description: "Restliches Credit-Kontingent"
+
+  ShowPublicTradeHistoryResponse:
+    type: "object"
+    properties:
+      trades:
+        type: "array"
+        description: ""
+        items:
+          type: "object"
+          properties:
+            date:
+              type: "integer"
+              description: "Datum (Unixtimestamp)"
+            price:
+              type: "number"
+              format: "float"
+              description: "Preis pro Bitcoin (Euro)"
+            amount:
+              type: "number"
+              format: "float"
+              description: "Anzahl BTC"
+            tid:
+              type: "integer"
+              description: "Eindeutige ID"
+      errors:
+        type: "array"
+        items:
+          $ref: "#/definitions/Error"
+      credits:
+        type: "integer"
+        description: "Restliches Credit-Kontingent"
+
+  ShowRatesResponse:
+    type: "object"
+    properties:
+      rates:
+        type: "object"
+        description: "Rate-Infos"
+        properties:
+          rate_weighted:
+            type: "string"
+            description: "gibt in der Regel den gewichtete Durchschnittskurs der letzten 3 Stunden an. Wird eine kritische Masse an Trades in den letzten 3 Stunden unterschritten, dann wird hier der 12 Stunden Durchschnitt zurückgegeben."
+          rate_weighted_3h:
+            type: "string"
+            description: "Durchschnittskurs der letzten 3 Stunden"
+          rate_weighted_12h:
+            type: "string"
+            description: "Durchschnittskurs der letzten 12 Stunden"
+      errors:
+        type: "array"
+        items:
+          $ref: "#/definitions/Error"
+      credits:
+        type: "integer"
+        description: "Restliches Credit-Kontingent"
+
+  ShowAccountLedgerResponse:
+    type: "object"
+    properties:
+      account_ledger:
+        type: "array"
+        description: "Details zur Position"
+        items:
+          type: "object"
+          properties:
+            date:
               type: "string"
-        403:
-          description: "Forbidden"
-        422:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
-        429:
-          description: "Zu viele Requests"
-
-  /orders/{order_id}:
-    get:
-      tags:
-        - "orders"
-      operationId: "showMyOrderDetails"
-      description: "Details zu einer meiner Order abrufen"
-      parameters:
-      - name: "order_id"
-        in: path
-        description: "ID des abzufragenden Angebots"
-        type: "string"
-        required: true
-      responses:
-        200:
-          description: ""
-          schema:
-            properties:
-              order:
-                type: "object"
-                properties:
-                  order_id:
-                    type: "string"
-                    description: "ID des Angebots"
-                  type:
-                    $ref: "#/definitions/BuyOrSell"
-                  max_amount:
-                    type: "number"
-                    format: "float"
-                    description: "Maximal handelbare BTC-Menge"
-                  min_amount:
-                    type: "number"
-                    format: "float"
-                    description: "Mindestens handelbare BTC-Menge"
-                  price:
-                    type: "number"
-                    format: "float"
-                    description: "Preis pro BTC in Euro"
-                  max_volume:
-                    type: "number"
-                    format: "float"
-                    description: "Max. Euro-Volumen der Order"
-                  min_volume:
-                    type: "number"
-                    format: "float"
-                    description: "Min. Euro-Volumen der Order"
-                  end_datetime:
-                    type: "string"
-                    format: "date-time"
-                    description: "Ablaufzeitpunkt des Angebots. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
-                  new_order_for_remaining_amount:
-                    type: "boolean"
-                    description: "Neues Angebot mit Restmenge anlegen, wenn nur eine Teilmenge aus dem Angebot bedient wurde."
-                  state:
-                    type: "integer"
-                    description: "Aktueller Status"
-                    enum:
-                      - -2
-                      - -1
-                      - 0
-                  order_requirements:
-                    type: "array"
-                    items:
-                      $ref: "#/definitions/OrderRequirement"
-                  created_at:
-                    type: "string"
-                    format: "date-time"
-                    description: "Erstellzeitpunkt des Angebots. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
-              errors:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Error"
-              credits:
-                type: "integer"
-                description: "Restliches Credit-Kontingent"
-
-    delete:
-      tags:
-        - "orders"
-      operationId: "deleteOrder"
-      description: "Löschen einer Order"
-      parameters:
-      - name: "order_id"
-        in: "path"
-        description: "Die id der Order, die gelöscht werden soll."
-        type: "string"
-        required: true
-      responses:
-        200:
-          description: "Order wurde erfolgreich gelöscht."
-          schema:
-            properties:
-              errors:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Error"
-              credits:
-                type: "integer"
-                description: "Restliches Credit-Kontingent"
-        403:
-          description: "Das Löschen ist nicht mehr möglich."
-          schema:
-            $ref: "#/definitions/Error"
-        404:
-          description: "Die Order konnte nicht gefunden werden."
-          schema:
-            $ref: "#/definitions/Error"
-        422:
-          description: "Trading on the marketplace is currently suspended. Trading is expected to resume on %datetime%."
-          schema:
-            $ref: "#/definitions/Error"
-
-  /orders/my_own:
-    get:
-      tags:
-      - "orders"
-      operationId: "showMyOrders"
-      description: "Abrufen und Filtern meiner Orders"
-      parameters:
-      - name: "type"
-        in: "query"
-        type: "string"
-        description: "Angebots-Typ"
-        required: false
-        enum:
-        - buy
-        - sell
-      - name: "state"
-        in: "query"
-        type: "integer"
-        description: "Aktueller Status"
-        required: false
-        default: 0
-        enum:
-        - -2
-        - -1
-        - 0
-      - name: "date_start"
-        in: "query"
-        type: "string"
-        format: "date-time"
-        description: "Startzeitpunkt, ab dem die Orders zurückgeliefert werden.
-                      Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
-        required: false
-      - name: "date_end"
-        in: "query"
-        type: "string"
-        format: "date-time"
-        description: "Endzeitpunkt, bis zu dem die Orders zurückgeliefert werden.
-                      Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
-        required: false
-      - name: "page"
-        in: "query"
-        type: "integer"
-        description: "Seitenzahl zum Blättern innerhalb der Ergebnisseiten"
-        required: false
-        default: 1
-      responses:
-        200:
-          description: ""
-          schema:
-            properties:
-              orders:
-                type: "array"
-                items:
+              format: "date-time"
+              description: "Buchungsdatum (Format: 2015-04-07T12:23:04+02:00 gemäß RFC 3339)"
+            type:
+              type: "string"
+              description: "Typ der Position"
+            reference:
+              type: "string"
+              description: "Referenz zu der Position (trade_id bei buy/sell oder txid bei einer Einzahlung/Auszahlung)"
+            trade:
+              type: "object"
+              description: "Tradedetails (nur bei Typ sell/buy)"
+              properties:
+                trade_id:
+                  type: "string"
+                  description: "ID des Trades"
+                price:
+                  type: "string"
+                  description: "Preis pro Bitcoin in Euro"
+                btc:
                   type: "object"
+                  description: "BTC-Summen"
                   properties:
-                    order_id:
+                    before_fee:
                       type: "string"
-                      description: "ID des Angebots"
-                    type:
-                      $ref: "#/definitions/BuyOrSell"
-                    max_amount:
-                      type: "number"
-                      format: "float"
-                      description: "Maximal handelbare BTC-Menge"
-                    min_amount:
-                      type: "number"
-                      format: "float"
-                      description: "Mindestens handelbare BTC-Menge"
-                    price:
-                      type: "number"
-                      format: "float"
-                      description: "Preis pro BTC in Euro"
-                    max_volume:
-                      type: "number"
-                      format: "float"
-                      description: "Max. Euro-Volumen der Order"
-                    min_volume:
-                      type: "number"
-                      format: "float"
-                      description: "Min. Euro-Volumen der Order"
-                    end_datetime:
+                      description: "Summe in BTC vor Gebühr"
+                    after_fee:
                       type: "string"
-                      format: "date-time"
-                      description: "Ablaufzeitpunkt des Angebots. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
-                    new_order_for_remaining_amount:
-                      type: "boolean"
-                      description: "Neues Angebot mit Restmenge anlegen, wenn nur eine Teilmenge aus dem Angebot bedient wurde."
-                    state:
-                      type: "integer"
-                      description: "Aktueller Status"
-                      enum:
-                        - -2
-                        - -1
-                        - 0
-                    order_requirements:
-                      type: "array"
-                      items:
-                        $ref: "#/definitions/OrderRequirement"
-                    created_at:
-                      type: "string"
-                      format: "date-time"
-                      description: "Erstellzeitpunkt des Angebots. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
-              page:
-                $ref: "#/definitions/Page"
-              errors:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Error"
-              credits:
-                type: "integer"
-                description: "Restliches Credit-Kontingent"
-        404:
-          description: "Order not found"
-          schema:
-            $ref: "#/definitions/Error"
-
-  /trades/{trade_id}:
-    get:
-      tags:
-        - "trades"
-      operationId: "showMyTradeDetails"
-      description: "Details eines meiner Trades abrufen"
-      parameters:
-      - name: "trade_id"
-        in: path
-        description: "ID des abzufragendenden Trades"
-        type: "string"
-        required: true
-      responses:
-        200:
-          description: ""
-          schema:
-            properties:
-              trade:
-                type: "object"
-                properties:
-                  trade_id:
-                    type: "string"
-                    description: "ID des Trades"
-                  trading_pair:
-                    type: "string"
-                    enum:
-                    - btceur
-                    - bcheur
-                    description: "Handelspaar"
-                  type:
-                    $ref: "#/definitions/BuyOrSell"
-                  max_amount:
-                    type: "number"
-                    format: "float"
-                    description: "Maximal handelbare BTC-Menge"
-                  amount:
-                    type: "number"
-                    format: "float"
-                    description: "Gekaufe/verkaufte Coin-Menge"
-                  price:
-                    type: "number"
-                    format: "float"
-                    description: "Preis pro BTC in Euro"
-                  volume:
-                    type: "number"
-                    format: "float"
-                    description: "Euro-Volumen des Trades"
-                  fee_eur:
-                    type: "number"
-                    format: "float"
-                    description: "Gebühr in Euro"
-                  fee_btc:
-                    type: "number"
-                    format: "float"
-                    description: "Gebühr in BTC
-                                  (Gebühren-Wert wird nur bei Trades mit dem Handelspaar 'btceur' angegeben, andernfalls beträgt der Gebühren-Wert 0)"
-                  fee_currency:
-                    type: "number"
-                    format: "float"
-                    description: "Gebühr in Kryptowährung des jeweiligen Handelspaars"
-                  new_order_id_for_remaining_amount:
-                    type: "string"
-                    description: "ID des neuen Angebots, das automatisch für die Rest-Coin-Menge erstellt wurde."
-                  state:
-                    type: "integer"
-                    description: "Aktueller Status"
-                    enum:
-                      - -2
-                      - -1
-                      - 0
-                  my_rating_for_trading_partner:
-                    type: "string"
-                    enum:
-                      - pending
-                      - negative
-                      - neutral
-                      - positive
-                    description: "Bewertung vom Handelspartner"
-                  trading_partner_information:
-                    $ref: "#/definitions/TradingPartner"
-                  created_at:
-                    type: "string"
-                    format: "date-time"
-                    description: "Erstellzeitpunkt des Trades. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
-                  successfully_finished_at:
-                    type: "string"
-                    format: "date-time"
-                    description: "Nur beim State 1 (Successful).
-                                  Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
-                  cancelled_at:
-                    type: "string"
-                    format: "date-time"
-                    description: "Nur beim State -1 (Cancelled).
-                                  Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
-                  payment_method:
-                    type: "integer"
-                    enum:
-                    - 1
-                    - 2
-                    description: "1 => SEPA; 2 Express"
-              errors:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Error"
-              credits:
-                type: "integer"
-                description: "Restliches Credit-Kontingent"
-
-    post:
-      tags:
-      - "trades"
-      operationId: "executeTrade"
-      description: "Kaufen/Verkaufen einer konkreten Order"
-      consumes:
-      - "application/x-www-form-urlencoded"
-      parameters:
-      - name: "trade_id"
-        in: "path"
-        type: "string"
-        description: "ID des Angebots."
-        required: true
-      - name: "type"
-        in: "formData"
-        type: "string"
-        enum:
-        - buy
-        - sell
-        description: "Angebots-Typ"
-        required: true
-      - name: "amount"
-        in: "formData"
-        type: "number"
-        format: "float"
-        description: "Menge der Bitcoins"
-        required: true
-      responses:
-        200:
-          description: "Order wurde erfolgreich ausgeführt."
-          schema:
-            properties:
-              errors:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Error"
-              credits:
-                type: "integer"
-                description: "Restliches Credit-Kontingent"
-        404:
-          description: "Order not found"
-          schema:
-            $ref: "#/definitions/Error"
-        422:
-          description: ""
-          schema:
-            $ref: "#/definitions/Error"
-  /trades:
-    get:
-      tags:
-      - "trades"
-      operationId: "showMyTrades"
-      description: "Abrufen und Filtern meiner getätigten Trades"
-      parameters:
-      - name: "type"
-        in: "query"
-        type: "string"
-        enum:
-        - buy
-        - sell
-        description: "Trade-Typ"
-        required: false
-      - name: "trading_pair"
-        in: "query"
-        type: "string"
-        enum:
-        - btceur
-        - bcheur
-        description: "Handelspaar"
-        required: false
-      - name: "state"
-        in: "query"
-        type: "integer"
-        enum:
-        - -1
-        - 0
-        - 1
-        description: "Aktueller Trade-Status"
-        default: 0
-        required: false
-      - name: "date_start"
-        in: "query"
-        type: "string"
-        format: "date-time"
-        description: "Startzeitpunkt, ab dem Trades zurückgeliefert werden.
-                      Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
-        required: false
-      - name: "date_end"
-        in: "query"
-        type: "string"
-        format: "date-time"
-        description: "Endzeitpunkt, bis zu dem Trades zurückgeliefert werden.
-                      Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
-        required: false
-      - name: "page"
-        in: "query"
-        type: "integer"
-        description: "Seitenzahl zum Blättern innerhalb der Ergebnisseiten"
-        default: 1
-        required: false
-
-      responses:
-        200:
-          description: ""
-          schema:
-            properties:
-              trades:
-                type: "array"
-                items:
+                      description: "Summe in BTC nach Gebühr"
+                euro:
                   type: "object"
+                  description: "Euro-Summen"
                   properties:
-                    trade_id:
+                    before_fee:
                       type: "string"
-                      description: "ID des Trades"
-                    trading_pair:
+                      description: "Summe in Euro vor Gebühr"
+                    after_fee:
                       type: "string"
-                      description: "Handelspaar"
-                      enum:
-                      - btceur
-                      - bcheur
-                    type:
-                      type: "string"
-                      description: "Typ des Trades"
-                      enum:
-                      - buy
-                      - sell
-                    amount:
-                      type: "number"
-                      format: "float"
-                      description: "Gekaufe/verkaufte Coin-Menge"
-                    price:
-                      type: "number"
-                      format: "float"
-                      description: "Preis pro Coin in Euro"
-                    volume:
-                      type: "number"
-                      format: "float"
-                      description: "Euro-Volumen des Trades"
-                    fee_eur:
-                      type: "number"
-                      format: "float"
-                      description: "Gebühr in Euro"
-                    fee_btc:
-                      type: "number"
-                      format: "float"
-                      description: "Gebühr in BTC (Gebühren-Wert wird nur bei Trades mit dem Handelspaar 'btceur' angegeben, andernfalls beträgt der Gebühren-Wert 0)"
-                    fee_currency:
-                      type: "number"
-                      format: "float"
-                      description: "Gebühr in Kryptowährung des jeweiligen Handelspaars"
-                    new_order_id_for_remaining_amount:
-                      type: "string"
-                      description: "ID des neuen Angebots, das automatisch für die Rest-Coin-Menge erstellt wurde."
-                    state:
-                      type: "integer"
-                      enum:
-                      - -1
-                      - 0
-                      - 1
-                      description: "Aktueller Status"
-                    my_rating_for_trading_partner:
-                      type: "string"
-                      enum:
-                      - pending
-                      - negative
-                      - neutral
-                      - positive
-                      description: "Bewertung vom Handelspartner"
-                    trading_partner_information:
-                      type: "object"
-                      properties:
-                        username:
-                          type: "string"
-                          description: "User-Name"
-                        is_kyc_full:
-                          type: "boolean"
-                          description: "Vollständig identifizierter User"
-                        trust_level:
-                          $ref: "#/definitions/TrustLevel"
-                        bank_name:
-                          type: "string"
-                          description: "Name der Bank"
-                        bic:
-                          type: "string"
-                          description: "BIC der Bank"
-                        seat_of_bank:
-                          $ref: "#/definitions/BankList"
-                        amount_trades:
-                          type: "integer"
-                          description: "Anzahl bereits getätigten Trades"
-                        rating:
-                          type: "integer"
-                          description: "Prozentualer Anteil an positiven Bewertungen durch die Handelspartner"
-                    created_at:
-                      type: "string"
-                      format: "date-time"
-                      description: "Erstellzeitpunkt des Trades. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
-                    successfully_finished_at:
-                      type: "string"
-                      format: "date-time"
-                      description: "Nur beim State 1 (Successful).
-                                    Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
-                    cancelled_at:
-                      type: "string"
-                      format: "date-time"
-                      description: "Nur beim State -1 (Cancelled).
-                                    Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)"
-                    payment_method:
-                      type: "integer"
-                      enum:
-                      - 1
-                      - 2
-                      description: "1 => SEPA; 2 Express"
-              page:
-                $ref: "#/definitions/Page"
-              errors:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Error"
-              credits:
-                type: "integer"
-                description: "Restliches Credit-Kontingent"
-        404:
-          description: "Order not found"
-          schema:
-            $ref: "#/definitions/Error"
-
-
-  /account:
-    get:
-      tags:
-      - "account"
-      operationId: "showAccountInfo"
-      description: "Abruf von Account Infos"
-      responses:
-        200:
-          description: ""
-          schema:
-            properties:
-              data:
-                type: "object"
-                properties:
-                  btc_balance:
-                    description: "Infos zur BTC-Balance"
-                    type: "object"
-                    properties:
-                      total_amount:
-                        type: "string"
-                        description: "Aktuelles BTC-Guthaben"
-                      available_amount:
-                        type: "string"
-                        description: "Aktuell verfügbares BTC-Guthaben"
-                      reserved_amount:
-                        type: "string"
-                        description: "Aktuell reserviertes BTC-Guthaben"
-                  fidor_reservation:
-                    description: "Infos zur ggfs. vorhandenen Fidor-Reservierung"
-                    type: "object"
-                    properties:
-                      total_amount:
-                        type: "number"
-                        format: "float"
-                        description: "Gesambetrag der Reservierung"
-                      available_amount:
-                        type: "number"
-                        format: "float"
-                        description: "Aktuell verfügbarer Betrag der Reservierung"
-                      reserved_at:
-                        type: "string"
-                        format: "date-time"
-                        description: "Erstelldatum der Reservierung (Format: 2015-04-07T12:23:04+02:00 gemäß RFC 3339"
-                      valid_until:
-                        type: "string"
-                        format: "date-time"
-                        description: "Reservierung gültig bis (Format: 2015-04-07T12:23:04+02:00 gemäß RFC 3339)"
-                  encrypted_information:
-                    description: "Verschlüsselte Infos"
-                    type: "object"
-                    properties:
-                      bic_short:
-                        type: "string"
-                        description: "Verschlüsselte Bankengruppe aus der BIC (ersten 4 Zeichen)"
-                      bic_full:
-                        type: "string"
-                        description: "Verschlüsselte komplette BIC"
-                      uid:
-                        type: "string"
-                        description: "Verschlüsselte eigene User-Id"
-              errors:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Error"
-              credits:
-                type: "integer"
-                description: "Restliches Credit-Kontingent"
-  /orders/compact:
-    get:
-      tags:
-      - "orders"
-      operationId: "showOrderbookCompact"
-      description: "Kauf- und Verkaufsangebote (bids und asks) in kompakter Form."
-      responses:
-        200:
-          description: ""
-          schema:
-            properties:
-              orders:
-                type: "object"
-                description: "Array mit Bids / Asks"
-                properties:
-                  bids:
-                    type: "array"
-                    items:
-                      type: "object"
-                      properties:
-                        price:
-                          type: "number"
-                          format: "float"
-                          description: "Preis pro Bitcoin (Euro)"
-                        amount:
-                          type: "number"
-                          format: "float"
-                          description: "Anzahl BTC"
-                  asks:
-                    type: "array"
-                    items:
-                      type: "object"
-                      properties:
-                        price:
-                          type: "number"
-                          format: "float"
-                          description: "Preis pro Bitcoin (Euro)"
-                        amount:
-                          type: "number"
-                          format: "float"
-                          description: "Anzahl BTC"
-              errors:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Error"
-              credits:
-                type: "integer"
-                description: "Restliches Credit-Kontingent"
-  /trades/history:
-    get:
-      tags:
-      - "trades"
-      operationId: "showPublicTradeHistory"
-      description: "Erfolgreich abgeschlossene Trades. Wenn kein Parameter gesetzt wird, werden alle erfolgreich abgeschlossenen Trades der letzten 7 Tage zurückgeliefert. Die Liste ist absteigend nach Datum sortiert."
-      parameters:
-      - name: "since_tid"
-        in: "query"
+                      description: "Summe in Euro nach Gebühr"
+            cashflow:
+              type: "string"
+              description: "Zu- / Abgang"
+            balance:
+              type: "string"
+              description: "Kontostand"
+      page:
+        $ref: "#/definitions/Page"
+      errors:
+        type: "array"
+        items:
+          $ref: "#/definitions/Error"
+      credits:
         type: "integer"
-        description: "inkrementelle Daten ab einer bestimmten TID anzeigen."
-        required: false
-      responses:
-        200:
-          description: ""
-          schema:
-            properties:
-              trades:
-                type: "array"
-                description: ""
-                items:
-                  type: "object"
-                  properties:
-                    date:
-                      type: "integer"
-                      description: "Datum (Unixtimestamp)"
-                    price:
-                      type: "number"
-                      format: "float"
-                      description: "Preis pro Bitcoin (Euro)"
-                    amount:
-                      type: "number"
-                      format: "float"
-                      description: "Anzahl BTC"
-                    tid:
-                      type: "integer"
-                      description: "Eindeutige ID"
-              errors:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Error"
-              credits:
-                type: "integer"
-                description: "Restliches Credit-Kontingent"
-  /rates:
-    get:
-      tags:
-      - "rates"
-      operationId: "showRates"
-      description: "Abfrage des gewichteten Durchschnittskurses der letzten 3 Stunden und der letzten 12 Stunden."
-      responses:
-        200:
-          description: ""
-          schema:
-            properties:
-              rates:
-                type: "object"
-                description: "Rate-Infos"
-                properties:
-                  rate_weighted:
-                    type: "string"
-                    description: "gibt in der Regel den gewichtete Durchschnittskurs der letzten 3 Stunden an. Wird eine kritische Masse an Trades in den letzten 3 Stunden unterschritten, dann wird hier der 12 Stunden Durchschnitt zurückgegeben."
-                  rate_weighted_3h:
-                    type: "string"
-                    description: "Durchschnittskurs der letzten 3 Stunden"
-                  rate_weighted_12h:
-                    type: "string"
-                    description: "Durchschnittskurs der letzten 12 Stunden"
-              errors:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Error"
-              credits:
-                type: "integer"
-                description: "Restliches Credit-Kontingent"
-  /account/ledger:
-    get:
-      tags:
-      - "account"
-      operationId: "showAccountLedger"
-      description: "Abruf des Kontoauszuges
-                    Bitte beachten Sie, dass im Kontoauzug nur Transaktionen aufgelistet werden, die bis zum Vortag ausgeführt wurden. Transaktionen von heute sind also erst morgen im Kontoauszug aufgeführt."
-      parameters:
-      - name: "type"
-        in: "query"
-        type: "string"
-        enum:
-        - all
-        - buy
-        - sell
-        - inpayment
-        - payout
-        - affiliate
-        - welcome_btc
-        - buy_yubikey
-        - buy_goldshop
-        - buy_diamondshop
-        - kickback
-        - outgoing_fee_voluntary
-        description: "Positions-Typ"
-        required: false
-        default: all
-      - name: "datetime_start"
-        in: "query"
-        type: "string"
-        format: "date-time"
-        description: "Buchungsdatum, ab dem die Positionen aufgelistet werden.
-                      Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
-        required: false
-        default: "akt. Datum -10 Tage"
-      - name: "datetime_end"
-        in: "query"
-        type: "string"
-        format: "date-time"
-        description: "Buchungsdatum, bis zu dem die Positionen aufgelistet werden.
-                      Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
-        required: false
-        default: "akt. Datum -1 Tag"
-      - name: "page"
-        in: "query"
-        type: "integer"
-        description: "Seitenzahl zum Blättern innerhalb der Ergebnisseiten"
-        required: false
-        default: 1
-      responses:
-        200:
-          description: ""
-          schema:
-            properties:
-              account_ledger:
-                type: "array"
-                description: "Details zur Position"
-                items:
-                  type: "object"
-                  properties:
-                    date:
-                      type: "string"
-                      format: "date-time"
-                      description: "Buchungsdatum (Format: 2015-04-07T12:23:04+02:00 gemäß RFC 3339)"
-                    type:
-                      type: "string"
-                      description: "Typ der Position"
-                    reference:
-                      type: "string"
-                      description: "Referenz zu der Position (trade_id bei buy/sell oder txid bei einer Einzahlung/Auszahlung)"
-                    trade:
-                      type: "object"
-                      description: "Tradedetails (nur bei Typ sell/buy)"
-                      properties:
-                        trade_id:
-                          type: "string"
-                          description: "ID des Trades"
-                        price:
-                          type: "string"
-                          description: "Preis pro Bitcoin in Euro"
-                        btc:
-                          type: "object"
-                          description: "BTC-Summen"
-                          properties:
-                            before_fee:
-                              type: "string"
-                              description: "Summe in BTC vor Gebühr"
-                            after_fee:
-                              type: "string"
-                              description: "Summe in BTC nach Gebühr"
-                        euro:
-                          type: "object"
-                          description: "Euro-Summen"
-                          properties:
-                            before_fee:
-                              type: "string"
-                              description: "Summe in Euro vor Gebühr"
-                            after_fee:
-                              type: "string"
-                              description: "Summe in Euro nach Gebühr"
-                    cashflow:
-                      type: "string"
-                      description: "Zu- / Abgang"
-                    balance:
-                      type: "string"
-                      description: "Kontostand"
-              page:
-                $ref: "#/definitions/Page"
-              errors:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Error"
-              credits:
-                type: "integer"
-                description: "Restliches Credit-Kontingent"
+        description: "Restliches Credit-Kontingent"
 
-definitions:
   Error:
     type: "object"
     properties:
@@ -1232,74 +868,488 @@ definitions:
       payment_option:
         $ref: "#/definitions/PaymentOption"
 
-  PaymentOption:
-    type: "integer"
-    default: 1
-    description: "Diese Option wirkt sich nur bei type='sell' aus!
 
-                  1 => Express-Only
-                  2 => SEPA-Only
-                  3 => Express & SEPA
+paths:
+  /orders:
+    get:
+      tags:
+        - "orders"
+      operationId: "showOrderbook"
+      description: "Durchsuchen des Orderbooks nach passenden Angeboten"
+      parameters:
+      - name: "type"
+        in: "query"
+        description: "Angebots-Typ. 'buy' liefert Verkaufsangebote, 'sell' Kaufangebote"
+        required: true
+        type: "string"
+        enum: *buyOrSell
+      - name: "amount"
+        in: "query"
+        description: "Menge der Bitcoins"
+        required: false
+        type: "number"
+        format: "float"
+      - name: "price"
+        in: "query"
+        description: "Preis pro Bitcoin in Euro. Entspricht bei 'buy' dem maximalen Kaufpreis und bei 'sell' dem minimalen Verkaufspreis."
+        required: false
+        type: "number"
+        format: "float"
+      - name: "order_requirements_fullfilled"
+        in: "query"
+        description: "Nur Angebote anzeigen, deren Anforderungen ich erfülle (bspw. Legitimationsstatus, Trust-Level, Sitz der Bank, Zahlungsart)."
+        required: false
+        type: "integer"
+        default: 0
+      - name: "only_kyc_full"
+        in: "query"
+        description: "Nur Angebote von vollständig identifizierten Usern anzeigen."
+        required: false
+        type: "integer"
+        default: 0
+      - name: "only_express_orders"
+        in: "query"
+        description: "Nur Angebote anzeigen, die über Express-Handel gehandelt werden können."
+        required: false
+        type: "integer"
+        default: 1
+      - name: "only_same_bankgroup"
+        in: "query"
+        description: "Nur Angebote von Handelspartner anzeigen, die ein Bankkonto bei derselben Bankgruppe (BIC-Nummernkreis) wie ich haben."
+        required: false
+        type: "integer"
+        default: 0
+      - name: "only_same_bic"
+        in: "query"
+        description: "Nur Angebote von Handelspartnern anzeigen, die ein Bankkonto bei derselben Bank wie ich haben."
+        required: false
+        type: "integer"
+        default: 0
+      - name: "seat_of_bank"
+        in: "query"
+        description: "Nur Angebote mit bestimmtem Sitz der Bank anzeigen. (ISO 3166-2)."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum: *bankList
+        collectionFormat: "multi"
+      responses:
+        200:
+          description: "Gefundene Angebote"
+          schema:
+            $ref: "#/definitions/ShowOrderbookResponse"
+        default:
+          description: "Anfrage konnte nicht erfolgreich durchgeführt werden."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
 
-                  Bei type='buy' ist Ihre Vorgabe unter 'Express-Handel-Einstellungen' (bei ausreichender Reservierung!) maßgeblich"
-    enum:
-      - 1
-      - 2
-      - 3
+    post:
+      tags:
+        - "orders"
+      operationId: "createOrder"
+      description: "Anlegen einer neuen Order"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "type"
+        type: "string"
+        in: "formData"
+      - name: "max_amount"
+        in: "formData"
+        type: "number"
+        format: "float"
+        description: "Maximale Menge der zu handelnden Bitcoins"
+      - name: "price"
+        in: "formData"
+        type: "number"
+        format: "float"
+        description: "Preis pro Bitcoin in Euro"
+      - name: "min_amount"
+        type: "number"
+        in: "formData"
+        format: "float"
+        default: "max_amount/2"
+        description: "Mindest-Menge der zu handelnden Bitcoins"
+      - name: "end_datetime"
+        type: "string"
+        in: "formData"
+        format: "date-time"
+        default: "aktuelles Datum + 5 Tage"
+        description: "Enddatum (mindestens 5 Tage in der Zukunft) des Angebots.
+                      Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00).
+                      Zulässige Werte für die Minuten sind: 00, 15 , 30, 45"
+      - name: "new_order_for_remaining_amount"
+        type: "integer"
+        in: "formData"
+        default: 0
+        description: "Neues Angebot mit Restmenge anlegen, wenn nur eine Teilmenge aus dem Angebot bedient wurde."
+      - name: "min_trust_level"
+        in: "formData"
+        type: "string"
+      - name: "only_kyc_full"
+        type: "integer"
+        in: "formData"
+        default: 0
+        description: "Handelspartner muss vollständig identifiziert sein."
+      - name: "payment_option"
+        in: "formData"
+        type: "string"
+      - name: "seat_of_bank"
+        in: "formData"
+        description: "Erlaubte Länder, in denen die Bank des Handelspartners ihren Sitz haben darf (ISO 3166-2"
+        type: "string"
+        enum: *bankList
+      responses:
+        201:
+          description: "Die ID des angelegten Angebots."
+          schema:
+            $ref: "#/definitions/CreateOrderResponse"
+          headers:
+            Location:
+              description: "Die ID des angelegten Angebots."
+              type: "string"
+        default:
+          description: "Anfrage konnte nicht erfolgreich durchgeführt werden."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
 
-  BankList:
-    type: "string"
-    description: "Bankenländerliste"
-    enum:
-    - "AT" #Österreich
-    - "BE" #Belgien
-    - "BG" #Bulgarien
-    - "CH" #Schweiz
-    - "CY" #Zypern
-    - "CZ" #Tschechische Republik
-    - "DE" #Deutschland
-    - "DK" #Dänemark
-    - "EE" #Estland
-    - "ES" #Spanien
-    - "FI" #Finnland
-    - "FR" #Frankreich
-    - "GB" #Großbritannien
-    - "GR" #Griechenland
-    - "HR" #Kroatien
-    - "HU" #Ungarn
-    - "IE" #Irland
-    - "IS" #Island
-    - "IT" #Italien
-    - "LI" #Liechtenstein
-    - "LT" #Litauen
-    - "LU" #Luxemburg
-    - "LV" #Lettland
-    - "MT" #Malta
-    - "MQ" #Martinique
-    - "NL" #Niederlande
-    - "NO" #Norwegen
-    - "PL" #Polen
-    - "PT" #Portugal
-    - "RO" #Rumänien
-    - "SE" #Schweden
-    - "SI" #Slowenien
-    - "SK" #Slowakei
+  /orders/{order_id}:
+    get:
+      tags:
+        - "orders"
+      operationId: "showMyOrderDetails"
+      description: "Details zu einer meiner Order abrufen"
+      parameters:
+      - name: "order_id"
+        in: path
+        description: "ID des abzufragenden Angebots"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/ShowMyOrderDetailsResponse"
+        default:
+          description: "Anfrage konnte nicht erfolgreich durchgeführt werden."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
 
-  TrustLevel:
-    type: "string"
-    description: "Trust-Level"
-    enum:
-      - bronze
-      - silver
-      - gold
-      - platin
+    delete:
+      tags:
+        - "orders"
+      operationId: "deleteOrder"
+      description: "Löschen einer Order"
+      parameters:
+      - name: "order_id"
+        in: "path"
+        description: "Die id der Order, die gelöscht werden soll."
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Order wurde erfolgreich gelöscht."
+          schema:
+            $ref: "#/definitions/DeleteOrderResponse"
+        403:
+          description: "Das Löschen ist nicht mehr möglich."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        404:
+          description: "Die Order konnte nicht gefunden werden."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        422:
+          description: "Trading on the marketplace is currently suspended. Trading is expected to resume on %datetime%."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
 
-  BuyOrSell:
-    type: "string"
-    description: "Kaufen oder Verkaufen"
-    enum:
-      - buy
-      - sell
+  /orders/my_own:
+    get:
+      tags:
+      - "orders"
+      operationId: "showMyOrders"
+      description: "Abrufen und Filtern meiner Orders"
+      parameters:
+      - name: "type"
+        in: "query"
+        type: "string"
+        description: "Angebots-Typ"
+        required: false
+        enum: *buyOrSell
+      - name: "state"
+        in: "query"
+        type: "integer"
+        description: "Aktueller Status"
+        required: false
+        default: 0
+        enum: *orderState
+      - name: "date_start"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: "Startzeitpunkt, ab dem die Orders zurückgeliefert werden.
+                      Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
+        required: false
+      - name: "date_end"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: "Endzeitpunkt, bis zu dem die Orders zurückgeliefert werden.
+                      Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
+        required: false
+      - name: "page"
+        in: "query"
+        type: "integer"
+        description: "Seitenzahl zum Blättern innerhalb der Ergebnisseiten"
+        required: false
+        default: 1
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/ShowMyOrdersResponse"
+        404:
+          description: "Order not found"
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: "Anfrage konnte nicht erfolgreich durchgeführt werden."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+
+  /trades/{trade_id}:
+    get:
+      tags:
+        - "trades"
+      operationId: "showMyTradeDetails"
+      description: "Details eines meiner Trades abrufen"
+      parameters:
+      - name: "trade_id"
+        in: path
+        description: "ID des abzufragendenden Trades"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Details zum Trade"
+          schema:
+            $ref: "#/definitions/ShowMyTradeDetailsResponse"
+        default:
+          description: "Anfrage konnte nicht erfolgreich durchgeführt werden."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+
+    post:
+      tags:
+      - "trades"
+      operationId: "executeTrade"
+      description: "Kaufen/Verkaufen einer konkreten Order"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "trade_id"
+        in: "path"
+        type: "string"
+        description: "ID des Angebots."
+        required: true
+      - name: "type"
+        in: "formData"
+        type: "string"
+        enum: *buyOrSell
+        description: "Angebots-Typ"
+        required: true
+      - name: "amount"
+        in: "formData"
+        type: "number"
+        format: "float"
+        description: "Menge der Bitcoins"
+        required: true
+      responses:
+        200:
+          description: "Order wurde erfolgreich ausgeführt."
+          schema:
+            $ref: "#/definitions/ExecuteTradeResponse"
+        default:
+          description: "Anfrage konnte nicht erfolgreich durchgeführt werden."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+
+  /trades:
+    get:
+      tags:
+      - "trades"
+      operationId: "showMyTrades"
+      description: "Abrufen und Filtern meiner getätigten Trades"
+      parameters:
+      - name: "type"
+        in: "query"
+        type: "string"
+        enum: *buyOrSell
+        description: "Trade-Typ"
+        required: false
+      - name: "trading_pair"
+        in: "query"
+        type: "string"
+        enum: *tradingPair
+        description: "Handelspaar"
+        required: false
+      - name: "state"
+        in: "query"
+        type: "integer"
+        enum: *tradeState
+        description: "Aktueller Trade-Status"
+        default: 0
+        required: false
+      - name: "date_start"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: "Startzeitpunkt, ab dem Trades zurückgeliefert werden.
+                      Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
+        required: false
+      - name: "date_end"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: "Endzeitpunkt, bis zu dem Trades zurückgeliefert werden.
+                      Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
+        required: false
+      - name: "page"
+        in: "query"
+        type: "integer"
+        description: "Seitenzahl zum Blättern innerhalb der Ergebnisseiten"
+        default: 1
+        required: false
+      responses:
+        200:
+          description: "Meine Trades"
+          schema:
+            $ref: "#/definitions/ShowMyTradesResponse"
+        default:
+          description: "Anfrage konnte nicht erfolgreich durchgeführt werden."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+
+
+  /account:
+    get:
+      tags:
+      - "account"
+      operationId: "showAccountInfo"
+      description: "Abruf von Account Infos"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/ShowAccountInfoResponse"
+        default:
+          description: "Anfrage konnte nicht erfolgreich durchgeführt werden."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+
+  /orders/compact:
+    get:
+      tags:
+      - "orders"
+      operationId: "showOrderbookCompact"
+      description: "Kauf- und Verkaufsangebote (bids und asks) in kompakter Form."
+      responses:
+        200:
+          description: "Das kompakte Orderbuch"
+          schema:
+            $ref: "#/definitions/ShowOrderbookCompactResponse"
+        default:
+          description: "Anfrage konnte nicht erfolgreich durchgeführt werden."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+
+  /trades/history:
+    get:
+      tags:
+      - "trades"
+      operationId: "showPublicTradeHistory"
+      description: "Erfolgreich abgeschlossene Trades. Wenn kein Parameter gesetzt wird, werden alle erfolgreich abgeschlossenen Trades der letzten 7 Tage zurückgeliefert. Die Liste ist absteigend nach Datum sortiert."
+      parameters:
+      - name: "since_tid"
+        in: "query"
+        type: "integer"
+        description: "inkrementelle Daten ab einer bestimmten TID anzeigen."
+        required: false
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/ShowPublicTradeHistoryResponse"
+        default:
+          description: "Anfrage konnte nicht erfolgreich durchgeführt werden."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+
+  /rates:
+    get:
+      tags:
+      - "rates"
+      operationId: "showRates"
+      description: "Abfrage des gewichteten Durchschnittskurses der letzten 3 Stunden und der letzten 12 Stunden."
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/ShowRatesResponse"
+        default:
+          description: "Anfrage konnte nicht erfolgreich durchgeführt werden."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+
+  /account/ledger:
+    get:
+      tags:
+      - "account"
+      operationId: "showAccountLedger"
+      description: "Abruf des Kontoauszuges
+                    Bitte beachten Sie, dass im Kontoauzug nur Transaktionen aufgelistet werden, die bis zum Vortag ausgeführt wurden. Transaktionen von heute sind also erst morgen im Kontoauszug aufgeführt."
+      parameters:
+      - name: "type"
+        in: "query"
+        type: "string"
+        enum: *positionType
+        description: "Positions-Typ"
+        required: false
+        default: all
+      - name: "datetime_start"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: "Buchungsdatum, ab dem die Positionen aufgelistet werden.
+                      Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
+        required: false
+        default: "akt. Datum -10 Tage"
+      - name: "datetime_end"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: "Buchungsdatum, bis zu dem die Positionen aufgelistet werden.
+                      Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00)."
+        required: false
+        default: "akt. Datum -1 Tag"
+      - name: "page"
+        in: "query"
+        type: "integer"
+        description: "Seitenzahl zum Blättern innerhalb der Ergebnisseiten"
+        required: false
+        default: 1
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/ShowAccountLedgerResponse"
+        default:
+          description: "Anfrage konnte nicht erfolgreich durchgeführt werden."
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+
 
 externalDocs:
   url: "https://www.bitcoin.de/de/api/tapi/v1/docu"

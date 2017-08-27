@@ -1,22 +1,19 @@
 package de.rainu.bitcoinde.endpoints;
 
-import de.rainu.bitcoinde.ApiException;
 import de.rainu.bitcoinde.ApiClient;
+import de.rainu.bitcoinde.ApiException;
 import de.rainu.bitcoinde.Configuration;
 import de.rainu.bitcoinde.Pair;
-
-import javax.ws.rs.core.GenericType;
-
-import org.joda.time.DateTime;
-import de.rainu.bitcoinde.model.InlineResponse20010;
-import de.rainu.bitcoinde.model.InlineResponse2006;
-
+import de.rainu.bitcoinde.model.ShowAccountInfoResponse;
+import de.rainu.bitcoinde.model.ShowAccountLedgerResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.core.GenericType;
+import org.joda.time.DateTime;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T13:21:29.350+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
 public class AccountApi {
   private ApiClient apiClient;
 
@@ -39,10 +36,10 @@ public class AccountApi {
   /**
    * 
    * Abruf von Account Infos
-   * @return InlineResponse2006
+   * @return ShowAccountInfoResponse
    * @throws ApiException if fails to make API call
    */
-  public InlineResponse2006 showAccountInfo() throws ApiException {
+  public ShowAccountInfoResponse showAccountInfo() throws ApiException {
     Object localVarPostBody = null;
     
     // create path and map variables
@@ -68,7 +65,7 @@ public class AccountApi {
 
     String[] localVarAuthNames = new String[] { "apiSignature", "apiKey", "apiNonce" };
 
-    GenericType<InlineResponse2006> localVarReturnType = new GenericType<InlineResponse2006>() {};
+    GenericType<ShowAccountInfoResponse> localVarReturnType = new GenericType<ShowAccountInfoResponse>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
   /**
@@ -78,10 +75,10 @@ public class AccountApi {
    * @param datetimeStart Buchungsdatum, ab dem die Positionen aufgelistet werden. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00). (optional, default to akt. Datum -10 Tage)
    * @param datetimeEnd Buchungsdatum, bis zu dem die Positionen aufgelistet werden. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00). (optional, default to akt. Datum -1 Tag)
    * @param page Seitenzahl zum Blättern innerhalb der Ergebnisseiten (optional, default to 1)
-   * @return InlineResponse20010
+   * @return ShowAccountLedgerResponse
    * @throws ApiException if fails to make API call
    */
-  public InlineResponse20010 showAccountLedger(String type, DateTime datetimeStart, DateTime datetimeEnd, Integer page) throws ApiException {
+  public ShowAccountLedgerResponse showAccountLedger(String type, DateTime datetimeStart, DateTime datetimeEnd, Integer page) throws ApiException {
     Object localVarPostBody = null;
     
     // create path and map variables
@@ -111,7 +108,7 @@ public class AccountApi {
 
     String[] localVarAuthNames = new String[] { "apiSignature", "apiKey", "apiNonce" };
 
-    GenericType<InlineResponse20010> localVarReturnType = new GenericType<InlineResponse20010>() {};
+    GenericType<ShowAccountLedgerResponse> localVarReturnType = new GenericType<ShowAccountLedgerResponse>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
 }

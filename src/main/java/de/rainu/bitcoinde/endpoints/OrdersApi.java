@@ -1,27 +1,23 @@
 package de.rainu.bitcoinde.endpoints;
 
-import de.rainu.bitcoinde.ApiException;
 import de.rainu.bitcoinde.ApiClient;
+import de.rainu.bitcoinde.ApiException;
 import de.rainu.bitcoinde.Configuration;
 import de.rainu.bitcoinde.Pair;
-
-import javax.ws.rs.core.GenericType;
-
-import org.joda.time.DateTime;
-import de.rainu.bitcoinde.model.Error;
-import de.rainu.bitcoinde.model.InlineResponse200;
-import de.rainu.bitcoinde.model.InlineResponse2001;
-import de.rainu.bitcoinde.model.InlineResponse2002;
-import de.rainu.bitcoinde.model.InlineResponse2003;
-import de.rainu.bitcoinde.model.InlineResponse2007;
-import de.rainu.bitcoinde.model.InlineResponse201;
-
+import de.rainu.bitcoinde.model.CreateOrderResponse;
+import de.rainu.bitcoinde.model.DeleteOrderResponse;
+import de.rainu.bitcoinde.model.ShowMyOrderDetailsResponse;
+import de.rainu.bitcoinde.model.ShowMyOrdersResponse;
+import de.rainu.bitcoinde.model.ShowOrderbookCompactResponse;
+import de.rainu.bitcoinde.model.ShowOrderbookResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.core.GenericType;
+import org.joda.time.DateTime;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T13:21:29.350+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
 public class OrdersApi {
   private ApiClient apiClient;
 
@@ -54,10 +50,10 @@ public class OrdersApi {
    * @param onlyKycFull Handelspartner muss vollständig identifiziert sein. (optional, default to 0)
    * @param paymentOption  (optional)
    * @param seatOfBank Erlaubte Länder, in denen die Bank des Handelspartners ihren Sitz haben darf (ISO 3166-2 (optional)
-   * @return InlineResponse201
+   * @return CreateOrderResponse
    * @throws ApiException if fails to make API call
    */
-  public InlineResponse201 createOrder(String type, Float maxAmount, Float price, Float minAmount, DateTime endDatetime, Integer newOrderForRemainingAmount, String minTrustLevel, Integer onlyKycFull, String paymentOption, String seatOfBank) throws ApiException {
+  public CreateOrderResponse createOrder(String type, Float maxAmount, Float price, Float minAmount, DateTime endDatetime, Integer newOrderForRemainingAmount, String minTrustLevel, Integer onlyKycFull, String paymentOption, String seatOfBank) throws ApiException {
     Object localVarPostBody = null;
     
     // create path and map variables
@@ -103,17 +99,17 @@ if (seatOfBank != null)
 
     String[] localVarAuthNames = new String[] { "apiSignature", "apiKey", "apiNonce" };
 
-    GenericType<InlineResponse201> localVarReturnType = new GenericType<InlineResponse201>() {};
+    GenericType<CreateOrderResponse> localVarReturnType = new GenericType<CreateOrderResponse>() {};
     return apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
   /**
    * 
    * Löschen einer Order
    * @param orderId Die id der Order, die gelöscht werden soll. (required)
-   * @return InlineResponse2002
+   * @return DeleteOrderResponse
    * @throws ApiException if fails to make API call
    */
-  public InlineResponse2002 deleteOrder(String orderId) throws ApiException {
+  public DeleteOrderResponse deleteOrder(String orderId) throws ApiException {
     Object localVarPostBody = null;
     
     // verify the required parameter 'orderId' is set
@@ -145,17 +141,17 @@ if (seatOfBank != null)
 
     String[] localVarAuthNames = new String[] { "apiSignature", "apiKey", "apiNonce" };
 
-    GenericType<InlineResponse2002> localVarReturnType = new GenericType<InlineResponse2002>() {};
+    GenericType<DeleteOrderResponse> localVarReturnType = new GenericType<DeleteOrderResponse>() {};
     return apiClient.invokeAPI(localVarPath, "DELETE", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
   /**
    * 
    * Details zu einer meiner Order abrufen
    * @param orderId ID des abzufragenden Angebots (required)
-   * @return InlineResponse2001
+   * @return ShowMyOrderDetailsResponse
    * @throws ApiException if fails to make API call
    */
-  public InlineResponse2001 showMyOrderDetails(String orderId) throws ApiException {
+  public ShowMyOrderDetailsResponse showMyOrderDetails(String orderId) throws ApiException {
     Object localVarPostBody = null;
     
     // verify the required parameter 'orderId' is set
@@ -187,7 +183,7 @@ if (seatOfBank != null)
 
     String[] localVarAuthNames = new String[] { "apiSignature", "apiKey", "apiNonce" };
 
-    GenericType<InlineResponse2001> localVarReturnType = new GenericType<InlineResponse2001>() {};
+    GenericType<ShowMyOrderDetailsResponse> localVarReturnType = new GenericType<ShowMyOrderDetailsResponse>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
   /**
@@ -198,10 +194,10 @@ if (seatOfBank != null)
    * @param dateStart Startzeitpunkt, ab dem die Orders zurückgeliefert werden. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00). (optional)
    * @param dateEnd Endzeitpunkt, bis zu dem die Orders zurückgeliefert werden. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00). (optional)
    * @param page Seitenzahl zum Blättern innerhalb der Ergebnisseiten (optional, default to 1)
-   * @return InlineResponse2003
+   * @return ShowMyOrdersResponse
    * @throws ApiException if fails to make API call
    */
-  public InlineResponse2003 showMyOrders(String type, Integer state, DateTime dateStart, DateTime dateEnd, Integer page) throws ApiException {
+  public ShowMyOrdersResponse showMyOrders(String type, Integer state, DateTime dateStart, DateTime dateEnd, Integer page) throws ApiException {
     Object localVarPostBody = null;
     
     // create path and map variables
@@ -232,7 +228,7 @@ if (seatOfBank != null)
 
     String[] localVarAuthNames = new String[] { "apiSignature", "apiKey", "apiNonce" };
 
-    GenericType<InlineResponse2003> localVarReturnType = new GenericType<InlineResponse2003>() {};
+    GenericType<ShowMyOrdersResponse> localVarReturnType = new GenericType<ShowMyOrdersResponse>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
   /**
@@ -247,10 +243,10 @@ if (seatOfBank != null)
    * @param onlySameBankgroup Nur Angebote von Handelspartner anzeigen, die ein Bankkonto bei derselben Bankgruppe (BIC-Nummernkreis) wie ich haben. (optional, default to 0)
    * @param onlySameBic Nur Angebote von Handelspartnern anzeigen, die ein Bankkonto bei derselben Bank wie ich haben. (optional, default to 0)
    * @param seatOfBank Nur Angebote mit bestimmtem Sitz der Bank anzeigen. (ISO 3166-2). (optional)
-   * @return InlineResponse200
+   * @return ShowOrderbookResponse
    * @throws ApiException if fails to make API call
    */
-  public InlineResponse200 showOrderbook(String type, Float amount, Float price, Integer orderRequirementsFullfilled, Integer onlyKycFull, Integer onlyExpressOrders, Integer onlySameBankgroup, Integer onlySameBic, List<String> seatOfBank) throws ApiException {
+  public ShowOrderbookResponse showOrderbook(String type, Float amount, Float price, Integer orderRequirementsFullfilled, Integer onlyKycFull, Integer onlyExpressOrders, Integer onlySameBankgroup, Integer onlySameBic, List<String> seatOfBank) throws ApiException {
     Object localVarPostBody = null;
     
     // verify the required parameter 'type' is set
@@ -290,16 +286,16 @@ if (seatOfBank != null)
 
     String[] localVarAuthNames = new String[] { "apiSignature", "apiKey", "apiNonce" };
 
-    GenericType<InlineResponse200> localVarReturnType = new GenericType<InlineResponse200>() {};
+    GenericType<ShowOrderbookResponse> localVarReturnType = new GenericType<ShowOrderbookResponse>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
   /**
    * 
    * Kauf- und Verkaufsangebote (bids und asks) in kompakter Form.
-   * @return InlineResponse2007
+   * @return ShowOrderbookCompactResponse
    * @throws ApiException if fails to make API call
    */
-  public InlineResponse2007 showOrderbookCompact() throws ApiException {
+  public ShowOrderbookCompactResponse showOrderbookCompact() throws ApiException {
     Object localVarPostBody = null;
     
     // create path and map variables
@@ -325,7 +321,7 @@ if (seatOfBank != null)
 
     String[] localVarAuthNames = new String[] { "apiSignature", "apiKey", "apiNonce" };
 
-    GenericType<InlineResponse2007> localVarReturnType = new GenericType<InlineResponse2007>() {};
+    GenericType<ShowOrderbookCompactResponse> localVarReturnType = new GenericType<ShowOrderbookCompactResponse>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
 }

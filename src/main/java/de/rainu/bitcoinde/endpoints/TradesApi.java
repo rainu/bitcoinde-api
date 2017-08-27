@@ -1,25 +1,21 @@
 package de.rainu.bitcoinde.endpoints;
 
-import de.rainu.bitcoinde.ApiException;
 import de.rainu.bitcoinde.ApiClient;
+import de.rainu.bitcoinde.ApiException;
 import de.rainu.bitcoinde.Configuration;
 import de.rainu.bitcoinde.Pair;
-
-import javax.ws.rs.core.GenericType;
-
-import org.joda.time.DateTime;
-import de.rainu.bitcoinde.model.Error;
-import de.rainu.bitcoinde.model.InlineResponse2002;
-import de.rainu.bitcoinde.model.InlineResponse2004;
-import de.rainu.bitcoinde.model.InlineResponse2005;
-import de.rainu.bitcoinde.model.InlineResponse2008;
-
+import de.rainu.bitcoinde.model.ExecuteTradeResponse;
+import de.rainu.bitcoinde.model.ShowMyTradeDetailsResponse;
+import de.rainu.bitcoinde.model.ShowMyTradesResponse;
+import de.rainu.bitcoinde.model.ShowPublicTradeHistoryResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.core.GenericType;
+import org.joda.time.DateTime;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T13:21:29.350+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
 public class TradesApi {
   private ApiClient apiClient;
 
@@ -45,10 +41,10 @@ public class TradesApi {
    * @param tradeId ID des Angebots. (required)
    * @param type Angebots-Typ (required)
    * @param amount Menge der Bitcoins (required)
-   * @return InlineResponse2002
+   * @return ExecuteTradeResponse
    * @throws ApiException if fails to make API call
    */
-  public InlineResponse2002 executeTrade(String tradeId, String type, Float amount) throws ApiException {
+  public ExecuteTradeResponse executeTrade(String tradeId, String type, Float amount) throws ApiException {
     Object localVarPostBody = null;
     
     // verify the required parameter 'tradeId' is set
@@ -94,17 +90,17 @@ if (amount != null)
 
     String[] localVarAuthNames = new String[] { "apiSignature", "apiKey", "apiNonce" };
 
-    GenericType<InlineResponse2002> localVarReturnType = new GenericType<InlineResponse2002>() {};
+    GenericType<ExecuteTradeResponse> localVarReturnType = new GenericType<ExecuteTradeResponse>() {};
     return apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
   /**
    * 
    * Details eines meiner Trades abrufen
    * @param tradeId ID des abzufragendenden Trades (required)
-   * @return InlineResponse2004
+   * @return ShowMyTradeDetailsResponse
    * @throws ApiException if fails to make API call
    */
-  public InlineResponse2004 showMyTradeDetails(String tradeId) throws ApiException {
+  public ShowMyTradeDetailsResponse showMyTradeDetails(String tradeId) throws ApiException {
     Object localVarPostBody = null;
     
     // verify the required parameter 'tradeId' is set
@@ -136,7 +132,7 @@ if (amount != null)
 
     String[] localVarAuthNames = new String[] { "apiSignature", "apiKey", "apiNonce" };
 
-    GenericType<InlineResponse2004> localVarReturnType = new GenericType<InlineResponse2004>() {};
+    GenericType<ShowMyTradeDetailsResponse> localVarReturnType = new GenericType<ShowMyTradeDetailsResponse>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
   /**
@@ -148,10 +144,10 @@ if (amount != null)
    * @param dateStart Startzeitpunkt, ab dem Trades zurückgeliefert werden. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00). (optional)
    * @param dateEnd Endzeitpunkt, bis zu dem Trades zurückgeliefert werden. Format gemäß RFC 3339 (Bsp: 2015-01-20T15:00:00+02:00). (optional)
    * @param page Seitenzahl zum Blättern innerhalb der Ergebnisseiten (optional, default to 1)
-   * @return InlineResponse2005
+   * @return ShowMyTradesResponse
    * @throws ApiException if fails to make API call
    */
-  public InlineResponse2005 showMyTrades(String type, String tradingPair, Integer state, DateTime dateStart, DateTime dateEnd, Integer page) throws ApiException {
+  public ShowMyTradesResponse showMyTrades(String type, String tradingPair, Integer state, DateTime dateStart, DateTime dateEnd, Integer page) throws ApiException {
     Object localVarPostBody = null;
     
     // create path and map variables
@@ -183,17 +179,17 @@ if (amount != null)
 
     String[] localVarAuthNames = new String[] { "apiSignature", "apiKey", "apiNonce" };
 
-    GenericType<InlineResponse2005> localVarReturnType = new GenericType<InlineResponse2005>() {};
+    GenericType<ShowMyTradesResponse> localVarReturnType = new GenericType<ShowMyTradesResponse>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
   /**
    * 
    * Erfolgreich abgeschlossene Trades. Wenn kein Parameter gesetzt wird, werden alle erfolgreich abgeschlossenen Trades der letzten 7 Tage zurückgeliefert. Die Liste ist absteigend nach Datum sortiert.
    * @param sinceTid inkrementelle Daten ab einer bestimmten TID anzeigen. (optional)
-   * @return InlineResponse2008
+   * @return ShowPublicTradeHistoryResponse
    * @throws ApiException if fails to make API call
    */
-  public InlineResponse2008 showPublicTradeHistory(Integer sinceTid) throws ApiException {
+  public ShowPublicTradeHistoryResponse showPublicTradeHistory(Integer sinceTid) throws ApiException {
     Object localVarPostBody = null;
     
     // create path and map variables
@@ -220,7 +216,7 @@ if (amount != null)
 
     String[] localVarAuthNames = new String[] { "apiSignature", "apiKey", "apiNonce" };
 
-    GenericType<InlineResponse2008> localVarReturnType = new GenericType<InlineResponse2008>() {};
+    GenericType<ShowPublicTradeHistoryResponse> localVarReturnType = new GenericType<ShowPublicTradeHistoryResponse>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
 }

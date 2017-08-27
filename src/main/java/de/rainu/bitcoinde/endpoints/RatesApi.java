@@ -1,20 +1,17 @@
 package de.rainu.bitcoinde.endpoints;
 
-import de.rainu.bitcoinde.ApiException;
 import de.rainu.bitcoinde.ApiClient;
+import de.rainu.bitcoinde.ApiException;
 import de.rainu.bitcoinde.Configuration;
 import de.rainu.bitcoinde.Pair;
-
-import javax.ws.rs.core.GenericType;
-
-import de.rainu.bitcoinde.model.InlineResponse2009;
-
+import de.rainu.bitcoinde.model.ShowRatesResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.core.GenericType;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T13:21:29.350+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
 public class RatesApi {
   private ApiClient apiClient;
 
@@ -37,10 +34,10 @@ public class RatesApi {
   /**
    * 
    * Abfrage des gewichteten Durchschnittskurses der letzten 3 Stunden und der letzten 12 Stunden.
-   * @return InlineResponse2009
+   * @return ShowRatesResponse
    * @throws ApiException if fails to make API call
    */
-  public InlineResponse2009 showRates() throws ApiException {
+  public ShowRatesResponse showRates() throws ApiException {
     Object localVarPostBody = null;
     
     // create path and map variables
@@ -66,7 +63,7 @@ public class RatesApi {
 
     String[] localVarAuthNames = new String[] { "apiSignature", "apiKey", "apiNonce" };
 
-    GenericType<InlineResponse2009> localVarReturnType = new GenericType<InlineResponse2009>() {};
+    GenericType<ShowRatesResponse> localVarReturnType = new GenericType<ShowRatesResponse>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
       }
 }

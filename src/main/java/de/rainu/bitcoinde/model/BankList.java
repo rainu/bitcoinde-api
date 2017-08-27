@@ -13,81 +13,45 @@
 
 package de.rainu.bitcoinde.model;
 
-import java.util.Objects;
-import io.swagger.annotations.ApiModel;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * Bankenländerliste
  */
 public enum BankList {
-  
-  AT("AT"),
-  
-  BE("BE"),
-  
-  BG("BG"),
-  
-  CH("CH"),
-  
-  CY("CY"),
-  
-  CZ("CZ"),
-  
-  DE("DE"),
-  
-  DK("DK"),
-  
-  EE("EE"),
-  
-  ES("ES"),
-  
-  FI("FI"),
-  
-  FR("FR"),
-  
-  GB("GB"),
-  
-  GR("GR"),
-  
-  HR("HR"),
-  
-  HU("HU"),
-  
-  IE("IE"),
-  
-  IS("IS"),
-  
-  IT("IT"),
-  
-  LI("LI"),
-  
-  LT("LT"),
-  
-  LU("LU"),
-  
-  LV("LV"),
-  
-  MT("MT"),
-  
-  MQ("MQ"),
-  
-  NL("NL"),
-  
-  NO("NO"),
-  
-  PL("PL"),
-  
-  PT("PT"),
-  
-  RO("RO"),
-  
-  SE("SE"),
-  
-  SI("SI"),
-  
-  SK("SK");
+  Oesterreich("AT"),
+  Belgien("BE"),
+  Bulgarien("BG"),
+  Schweiz("CH"),
+  Zypern("CY"),
+  TschechischeRepublik("CZ"),
+  Deutschland("DE"),
+  Daenemark("DK"),
+  Estland("EE"),
+  Spanien("ES"),
+  Finnland("FI"),
+  Frankreich("FR"),
+  Grossbritannien("GB"),
+  Griechenland("GR"),
+  Kroatien("HR"),
+  Ungarn("HU"),
+  Irland("IE"),
+  Island("IS"),
+  Italien("IT"),
+  Liechtenstein("LI"),
+  Litauen("LT"),
+  Luxemburg("LU"),
+  Lettland("LV"),
+  Malta("MT"),
+  Martinique("MQ"),
+  Niederlande("NL"),
+  Norwegen("NO"),
+  Polen("PL"),
+  Portugal("PT"),
+  Rumaenien("RO"),
+  Schweden("SE"),
+  Slowenien("SI"),
+  Slowakei("SK");
 
   private String value;
 

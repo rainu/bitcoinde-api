@@ -16,19 +16,17 @@ package de.rainu.bitcoinde.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
- * Diese Option wirkt sich nur bei type='sell' aus! 1 => Express-Only 2 => SEPA-Only 3 => Express & SEPA Bei type='buy' ist Ihre Vorgabe unter 'Express-Handel-Einstellungen' (bei ausreichender Reservierung!) maßgeblich
+ * Handelspaare
  */
-public enum PaymentOption {
+public enum TradingPair {
   
-  EXPRESS_ONLY(1),
+  BTCEUR("btceur"),
   
-  SEPA_ONLY(2),
-  
-  EXPRESS_AND_SEPA(3);
+  BCHEUR("bcheur");
 
-  private Integer value;
+  private String value;
 
-  PaymentOption(Integer value) {
+  TradingPair(String value) {
     this.value = value;
   }
 
@@ -38,8 +36,8 @@ public enum PaymentOption {
   }
 
   @JsonCreator
-  public static PaymentOption fromValue(String text) {
-    for (PaymentOption b : PaymentOption.values()) {
+  public static TradingPair fromValue(String text) {
+    for (TradingPair b : TradingPair.values()) {
       if (String.valueOf(b.value).equals(text)) {
         return b;
       }

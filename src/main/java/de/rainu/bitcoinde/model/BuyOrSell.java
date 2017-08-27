@@ -13,9 +13,6 @@
 
 package de.rainu.bitcoinde.model;
 
-import java.util.Objects;
-import io.swagger.annotations.ApiModel;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**

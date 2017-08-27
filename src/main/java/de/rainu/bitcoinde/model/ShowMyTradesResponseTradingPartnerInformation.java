@@ -18,10 +18,10 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 
 /**
- * TradingPartner
+ * ShowMyTradesResponseTradingPartnerInformation
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
-public class TradingPartner {
+public class ShowMyTradesResponseTradingPartnerInformation {
   @JsonProperty("username")
   private String username = null;
 
@@ -37,13 +37,16 @@ public class TradingPartner {
   @JsonProperty("bic")
   private String bic = null;
 
-  @JsonProperty("rating")
-  private Integer rating = null;
+  @JsonProperty("seat_of_bank")
+  private BankList seatOfBank = null;
 
   @JsonProperty("amount_trades")
   private Integer amountTrades = null;
 
-  public TradingPartner username(String username) {
+  @JsonProperty("rating")
+  private Integer rating = null;
+
+  public ShowMyTradesResponseTradingPartnerInformation username(String username) {
     this.username = username;
     return this;
   }
@@ -61,7 +64,7 @@ public class TradingPartner {
     this.username = username;
   }
 
-  public TradingPartner isKycFull(Boolean isKycFull) {
+  public ShowMyTradesResponseTradingPartnerInformation isKycFull(Boolean isKycFull) {
     this.isKycFull = isKycFull;
     return this;
   }
@@ -79,7 +82,7 @@ public class TradingPartner {
     this.isKycFull = isKycFull;
   }
 
-  public TradingPartner trustLevel(TrustLevel trustLevel) {
+  public ShowMyTradesResponseTradingPartnerInformation trustLevel(TrustLevel trustLevel) {
     this.trustLevel = trustLevel;
     return this;
   }
@@ -97,7 +100,7 @@ public class TradingPartner {
     this.trustLevel = trustLevel;
   }
 
-  public TradingPartner bankName(String bankName) {
+  public ShowMyTradesResponseTradingPartnerInformation bankName(String bankName) {
     this.bankName = bankName;
     return this;
   }
@@ -115,7 +118,7 @@ public class TradingPartner {
     this.bankName = bankName;
   }
 
-  public TradingPartner bic(String bic) {
+  public ShowMyTradesResponseTradingPartnerInformation bic(String bic) {
     this.bic = bic;
     return this;
   }
@@ -133,25 +136,25 @@ public class TradingPartner {
     this.bic = bic;
   }
 
-  public TradingPartner rating(Integer rating) {
-    this.rating = rating;
+  public ShowMyTradesResponseTradingPartnerInformation seatOfBank(BankList seatOfBank) {
+    this.seatOfBank = seatOfBank;
     return this;
   }
 
    /**
-   * Prozentualer Anteil an positiven Bewertungen durch die Handelspartner
-   * @return rating
+   * Get seatOfBank
+   * @return seatOfBank
   **/
-  @ApiModelProperty(example = "null", value = "Prozentualer Anteil an positiven Bewertungen durch die Handelspartner")
-  public Integer getRating() {
-    return rating;
+  @ApiModelProperty(example = "null", value = "")
+  public BankList getSeatOfBank() {
+    return seatOfBank;
   }
 
-  public void setRating(Integer rating) {
-    this.rating = rating;
+  public void setSeatOfBank(BankList seatOfBank) {
+    this.seatOfBank = seatOfBank;
   }
 
-  public TradingPartner amountTrades(Integer amountTrades) {
+  public ShowMyTradesResponseTradingPartnerInformation amountTrades(Integer amountTrades) {
     this.amountTrades = amountTrades;
     return this;
   }
@@ -169,6 +172,24 @@ public class TradingPartner {
     this.amountTrades = amountTrades;
   }
 
+  public ShowMyTradesResponseTradingPartnerInformation rating(Integer rating) {
+    this.rating = rating;
+    return this;
+  }
+
+   /**
+   * Prozentualer Anteil an positiven Bewertungen durch die Handelspartner
+   * @return rating
+  **/
+  @ApiModelProperty(example = "null", value = "Prozentualer Anteil an positiven Bewertungen durch die Handelspartner")
+  public Integer getRating() {
+    return rating;
+  }
+
+  public void setRating(Integer rating) {
+    this.rating = rating;
+  }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -178,34 +199,36 @@ public class TradingPartner {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TradingPartner tradingPartner = (TradingPartner) o;
-    return Objects.equals(this.username, tradingPartner.username) &&
-        Objects.equals(this.isKycFull, tradingPartner.isKycFull) &&
-        Objects.equals(this.trustLevel, tradingPartner.trustLevel) &&
-        Objects.equals(this.bankName, tradingPartner.bankName) &&
-        Objects.equals(this.bic, tradingPartner.bic) &&
-        Objects.equals(this.rating, tradingPartner.rating) &&
-        Objects.equals(this.amountTrades, tradingPartner.amountTrades);
+    ShowMyTradesResponseTradingPartnerInformation showMyTradesResponseTradingPartnerInformation = (ShowMyTradesResponseTradingPartnerInformation) o;
+    return Objects.equals(this.username, showMyTradesResponseTradingPartnerInformation.username) &&
+        Objects.equals(this.isKycFull, showMyTradesResponseTradingPartnerInformation.isKycFull) &&
+        Objects.equals(this.trustLevel, showMyTradesResponseTradingPartnerInformation.trustLevel) &&
+        Objects.equals(this.bankName, showMyTradesResponseTradingPartnerInformation.bankName) &&
+        Objects.equals(this.bic, showMyTradesResponseTradingPartnerInformation.bic) &&
+        Objects.equals(this.seatOfBank, showMyTradesResponseTradingPartnerInformation.seatOfBank) &&
+        Objects.equals(this.amountTrades, showMyTradesResponseTradingPartnerInformation.amountTrades) &&
+        Objects.equals(this.rating, showMyTradesResponseTradingPartnerInformation.rating);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(username, isKycFull, trustLevel, bankName, bic, rating, amountTrades);
+    return Objects.hash(username, isKycFull, trustLevel, bankName, bic, seatOfBank, amountTrades, rating);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class TradingPartner {\n");
+    sb.append("class ShowMyTradesResponseTradingPartnerInformation {\n");
     
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("    isKycFull: ").append(toIndentedString(isKycFull)).append("\n");
     sb.append("    trustLevel: ").append(toIndentedString(trustLevel)).append("\n");
     sb.append("    bankName: ").append(toIndentedString(bankName)).append("\n");
     sb.append("    bic: ").append(toIndentedString(bic)).append("\n");
-    sb.append("    rating: ").append(toIndentedString(rating)).append("\n");
+    sb.append("    seatOfBank: ").append(toIndentedString(seatOfBank)).append("\n");
     sb.append("    amountTrades: ").append(toIndentedString(amountTrades)).append("\n");
+    sb.append("    rating: ").append(toIndentedString(rating)).append("\n");
     sb.append("}");
     return sb.toString();
   }
