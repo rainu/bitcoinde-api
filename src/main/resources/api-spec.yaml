@@ -201,6 +201,10 @@ definitions:
               description: "ID des Angebots"
             type:
               $ref: "#/definitions/BuyOrSell"
+            trading_pair:
+              type: "string"
+              enum: *tradingPair
+              description: "Handelspaar"
             max_amount:
               type: "number"
               format: "float"

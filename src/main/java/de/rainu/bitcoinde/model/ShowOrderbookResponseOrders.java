@@ -13,20 +13,54 @@
 
 package de.rainu.bitcoinde.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * ShowOrderbookResponseOrders
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-30T20:00:51.287+02:00")
 public class ShowOrderbookResponseOrders {
   @JsonProperty("order_id")
   private String orderId = null;
 
   @JsonProperty("type")
   private BuyOrSell type = null;
+
+  /**
+   * Handelspaar
+   */
+  public enum TradingPairEnum {
+    BTCEUR("btceur"),
+    
+    BCHEUR("bcheur");
+
+    private String value;
+
+    TradingPairEnum(String value) {
+      this.value = value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static TradingPairEnum fromValue(String text) {
+      for (TradingPairEnum b : TradingPairEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
+
+  @JsonProperty("trading_pair")
+  private TradingPairEnum tradingPair = null;
 
   @JsonProperty("max_amount")
   private Float maxAmount = null;
@@ -86,6 +120,24 @@ public class ShowOrderbookResponseOrders {
 
   public void setType(BuyOrSell type) {
     this.type = type;
+  }
+
+  public ShowOrderbookResponseOrders tradingPair(TradingPairEnum tradingPair) {
+    this.tradingPair = tradingPair;
+    return this;
+  }
+
+   /**
+   * Handelspaar
+   * @return tradingPair
+  **/
+  @ApiModelProperty(example = "null", value = "Handelspaar")
+  public TradingPairEnum getTradingPair() {
+    return tradingPair;
+  }
+
+  public void setTradingPair(TradingPairEnum tradingPair) {
+    this.tradingPair = tradingPair;
   }
 
   public ShowOrderbookResponseOrders maxAmount(Float maxAmount) {
@@ -244,6 +296,7 @@ public class ShowOrderbookResponseOrders {
     ShowOrderbookResponseOrders showOrderbookResponseOrders = (ShowOrderbookResponseOrders) o;
     return Objects.equals(this.orderId, showOrderbookResponseOrders.orderId) &&
         Objects.equals(this.type, showOrderbookResponseOrders.type) &&
+        Objects.equals(this.tradingPair, showOrderbookResponseOrders.tradingPair) &&
         Objects.equals(this.maxAmount, showOrderbookResponseOrders.maxAmount) &&
         Objects.equals(this.minAmount, showOrderbookResponseOrders.minAmount) &&
         Objects.equals(this.price, showOrderbookResponseOrders.price) &&
@@ -256,7 +309,7 @@ public class ShowOrderbookResponseOrders {
 
   @Override
   public int hashCode() {
-    return Objects.hash(orderId, type, maxAmount, minAmount, price, maxVolume, minVolume, orderRequirementsFullfilled, tradingPartnerInformation, orderRequirements);
+    return Objects.hash(orderId, type, tradingPair, maxAmount, minAmount, price, maxVolume, minVolume, orderRequirementsFullfilled, tradingPartnerInformation, orderRequirements);
   }
 
 
@@ -267,6 +320,7 @@ public class ShowOrderbookResponseOrders {
     
     sb.append("    orderId: ").append(toIndentedString(orderId)).append("\n");
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
+    sb.append("    tradingPair: ").append(toIndentedString(tradingPair)).append("\n");
     sb.append("    maxAmount: ").append(toIndentedString(maxAmount)).append("\n");
     sb.append("    minAmount: ").append(toIndentedString(minAmount)).append("\n");
     sb.append("    price: ").append(toIndentedString(price)).append("\n");
