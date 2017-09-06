@@ -13,16 +13,16 @@
 
 package de.rainu.bitcoinde.model;
 
+import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Objects;
 
 /**
  * Tradedetails (nur bei Typ sell/buy)
  */
 @ApiModel(description = "Tradedetails (nur bei Typ sell/buy)")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-09-06T15:27:33.243+02:00")
 public class ShowAccountLedgerResponseTrade {
   @JsonProperty("trade_id")
   private String tradeId = null;
@@ -32,6 +32,9 @@ public class ShowAccountLedgerResponseTrade {
 
   @JsonProperty("btc")
   private ShowAccountLedgerResponseTradeBtc btc = null;
+
+  @JsonProperty("bch")
+  private ShowAccountLedgerResponseTradeBch bch = null;
 
   @JsonProperty("euro")
   private ShowAccountLedgerResponseTradeEuro euro = null;
@@ -90,6 +93,24 @@ public class ShowAccountLedgerResponseTrade {
     this.btc = btc;
   }
 
+  public ShowAccountLedgerResponseTrade bch(ShowAccountLedgerResponseTradeBch bch) {
+    this.bch = bch;
+    return this;
+  }
+
+   /**
+   * Get bch
+   * @return bch
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public ShowAccountLedgerResponseTradeBch getBch() {
+    return bch;
+  }
+
+  public void setBch(ShowAccountLedgerResponseTradeBch bch) {
+    this.bch = bch;
+  }
+
   public ShowAccountLedgerResponseTrade euro(ShowAccountLedgerResponseTradeEuro euro) {
     this.euro = euro;
     return this;
@@ -121,12 +142,13 @@ public class ShowAccountLedgerResponseTrade {
     return Objects.equals(this.tradeId, showAccountLedgerResponseTrade.tradeId) &&
         Objects.equals(this.price, showAccountLedgerResponseTrade.price) &&
         Objects.equals(this.btc, showAccountLedgerResponseTrade.btc) &&
+        Objects.equals(this.bch, showAccountLedgerResponseTrade.bch) &&
         Objects.equals(this.euro, showAccountLedgerResponseTrade.euro);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tradeId, price, btc, euro);
+    return Objects.hash(tradeId, price, btc, bch, euro);
   }
 
 
@@ -138,6 +160,7 @@ public class ShowAccountLedgerResponseTrade {
     sb.append("    tradeId: ").append(toIndentedString(tradeId)).append("\n");
     sb.append("    price: ").append(toIndentedString(price)).append("\n");
     sb.append("    btc: ").append(toIndentedString(btc)).append("\n");
+    sb.append("    bch: ").append(toIndentedString(bch)).append("\n");
     sb.append("    euro: ").append(toIndentedString(euro)).append("\n");
     sb.append("}");
     return sb.toString();
