@@ -1,0 +1,12 @@
+image: maven:alpine
+
+stages:
+  - build
+  - test
+
+build-job:
+  stage: build
+  script:
+    - mvn compile
+  only:
+    - master
