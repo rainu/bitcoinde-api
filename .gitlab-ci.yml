@@ -3,10 +3,19 @@ image: maven:alpine
 stages:
   - build
   - test
+  - deploy
 
 build-job:
   stage: build
   script:
-    - mvn compile
-  only:
-    - master
+    - mvn clean compile
+
+test-job:
+  stage: test
+  script:
+    - mvn clean verify
+    
+deploy-job:
+  stage: deploy
+  script:
+    - mvn clean install
