@@ -19,6 +19,13 @@
     <junit-version>4.12</junit-version>
   </properties>
 
+  <distributionManagement>
+    <snapshotRepository>
+      <id>nexus.raysha</id>
+      <url>https://nexus.raysha.de/repository/raysha-private-snapshot/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <dependencies>
     <!-- dependencies are needed for the client being generated -->
 

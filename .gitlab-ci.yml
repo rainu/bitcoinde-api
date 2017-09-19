@@ -1,12 +1,11 @@
 image: maven:alpine
 
 stages:
-  - build
   - test
   - deploy
 
 build-job:
-  stage: build
+  stage: test
   script:
     - mvn clean compile
 
@@ -14,8 +13,9 @@ test-job:
   stage: test
   script:
     - mvn clean verify
-    
+
 deploy-job:
   stage: deploy
   script:
-    - mvn clean install
+    - cp ci/settings.xml ~/.m2/settings.xml
+    - mvn clean deploy
