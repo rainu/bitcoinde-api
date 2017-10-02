@@ -36,6 +36,9 @@ public class ShowAccountLedgerResponseTrade {
   @JsonProperty("bch")
   private ShowAccountLedgerResponseTradeBch bch = null;
 
+  @JsonProperty("eth")
+  private ShowAccountLedgerResponseTradeEth eth = null;
+
   @JsonProperty("euro")
   private ShowAccountLedgerResponseTradeEuro euro = null;
 
@@ -95,6 +98,29 @@ public class ShowAccountLedgerResponseTrade {
 
   public ShowAccountLedgerResponseTrade bch(ShowAccountLedgerResponseTradeBch bch) {
     this.bch = bch;
+    return this;
+  }
+
+  public ShowAccountLedgerResponseTrade eth(ShowAccountLedgerResponseTradeEth eth) {
+    this.eth = eth;
+    return this;
+  }
+
+   /**
+   * Get eth
+   * @return eth
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public ShowAccountLedgerResponseTradeEth getEth() {
+    return eth;
+  }
+
+  public void setEth(ShowAccountLedgerResponseTradeEth eth) {
+    this.eth = eth;
+  }
+
+  public ShowAccountLedgerResponseTrade bch(ShowAccountLedgerResponseTradeEth eth) {
+    this.eth = eth;
     return this;
   }
 

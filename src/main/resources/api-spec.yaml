@@ -792,6 +792,16 @@ definitions:
                     after_fee:
                       type: "string"
                       description: "Summe in BCH nach Gebühr"
+                eth:
+                  type: "object"
+                  description: "ETH-Summen"
+                  properties:
+                    before_fee:
+                      type: "string"
+                      description: "Summe in ETH vor Gebühr"
+                    after_fee:
+                      type: "string"
+                      description: "Summe in ETH nach Gebühr"
                 euro:
                   type: "object"
                   description: "Euro-Summen"
