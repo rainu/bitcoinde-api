@@ -147,6 +147,7 @@ definitions:
     enum: &tradingPair
       - btceur #BTC/EUR
       - bcheur #BCH/EUR
+      - etheur #ETH/EUR
 
   TradingPartnerRating:
     type: "string"

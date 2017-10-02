@@ -32,7 +32,9 @@ public class ShowMyTradesResponseTrades {
    */
   public enum TradingPairEnum {
     BTCEUR("btceur"),
-    
+
+    ETHEUR("etheur"),
+
     BCHEUR("bcheur");
 
     private String value;

@@ -21,7 +21,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 public enum TradingPair {
   
   BTCEUR("btceur"),
-  
+
+  ETHEUR("etheur"),
+
   BCHEUR("bcheur");
 
   private String value;
