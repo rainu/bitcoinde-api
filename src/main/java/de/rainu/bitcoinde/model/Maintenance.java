@@ -16,31 +16,32 @@ package de.rainu.bitcoinde.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
+import org.joda.time.DateTime;
 
 /**
- * Error
+ * Maintenance
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-10T20:05:46.672+02:00")
-public class Error {
+public class Maintenance {
   @JsonProperty("message")
   private String message = null;
 
-  @JsonProperty("code")
-  private String code = null;
+  @JsonProperty("start")
+  private DateTime start = null;
 
-  @JsonProperty("field")
-  private String field = null;
+  @JsonProperty("end")
+  private DateTime end = null;
 
-  public Error message(String message) {
+  public Maintenance message(String message) {
     this.message = message;
     return this;
   }
 
    /**
-   * Get message
+   * Infotext
    * @return message
   **/
-  @ApiModelProperty(example = "null", value = "")
+  @ApiModelProperty(example = "null", value = "Infotext")
   public String getMessage() {
     return message;
   }
@@ -49,40 +50,40 @@ public class Error {
     this.message = message;
   }
 
-  public Error code(String code) {
-    this.code = code;
+  public Maintenance start(DateTime start) {
+    this.start = start;
     return this;
   }
 
    /**
-   * Get code
-   * @return code
+   * Start der Arbeiten (Format: 2015-04-07T12:23:04+02:00 gemäß RFC 3339)
+   * @return start
   **/
-  @ApiModelProperty(example = "null", value = "")
-  public String getCode() {
-    return code;
+  @ApiModelProperty(example = "null", value = "Start der Arbeiten (Format: 2015-04-07T12:23:04+02:00 gemäß RFC 3339)")
+  public DateTime getStart() {
+    return start;
   }
 
-  public void setCode(String code) {
-    this.code = code;
+  public void setStart(DateTime start) {
+    this.start = start;
   }
 
-  public Error field(String field) {
-    this.field = field;
+  public Maintenance end(DateTime end) {
+    this.end = end;
     return this;
   }
 
    /**
-   * Get field
-   * @return field
+   * Voraussichtliches Ende der Arbeiten (Format: 2015-04-07T12:23:04+02:00 gemäß RFC 3339)
+   * @return end
   **/
-  @ApiModelProperty(example = "null", value = "")
-  public String getField() {
-    return field;
+  @ApiModelProperty(example = "null", value = "Voraussichtliches Ende der Arbeiten (Format: 2015-04-07T12:23:04+02:00 gemäß RFC 3339)")
+  public DateTime getEnd() {
+    return end;
   }
 
-  public void setField(String field) {
-    this.field = field;
+  public void setEnd(DateTime end) {
+    this.end = end;
   }
 
 
@@ -94,26 +95,26 @@ public class Error {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Error error = (Error) o;
-    return Objects.equals(this.message, error.message) &&
-        Objects.equals(this.code, error.code) &&
-        Objects.equals(this.field, error.field);
+    Maintenance maintenance = (Maintenance) o;
+    return Objects.equals(this.message, maintenance.message) &&
+        Objects.equals(this.start, maintenance.start) &&
+        Objects.equals(this.end, maintenance.end);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(message, code, field);
+    return Objects.hash(message, start, end);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Error {\n");
+    sb.append("class Maintenance {\n");
     
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
-    sb.append("    code: ").append(toIndentedString(code)).append("\n");
-    sb.append("    field: ").append(toIndentedString(field)).append("\n");
+    sb.append("    start: ").append(toIndentedString(start)).append("\n");
+    sb.append("    end: ").append(toIndentedString(end)).append("\n");
     sb.append("}");
     return sb.toString();
   }

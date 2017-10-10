@@ -21,15 +21,12 @@ import java.util.Objects;
 import org.joda.time.DateTime;
 
 /**
- * ShowMyOrderDetailsResponseOrder
+ * ShowMyOrdersResponseOrders
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-10T20:05:46.672+02:00")
-public class ShowMyOrderDetailsResponseOrder {
+public class ShowMyOrdersResponseOrders {
   @JsonProperty("order_id")
   private String orderId = null;
-
-  @JsonProperty("trading_pair")
-  private TradingPair tradingPair = null;
 
   @JsonProperty("type")
   private BuyOrSell type = null;
@@ -64,7 +61,7 @@ public class ShowMyOrderDetailsResponseOrder {
   @JsonProperty("created_at")
   private DateTime createdAt = null;
 
-  public ShowMyOrderDetailsResponseOrder orderId(String orderId) {
+  public ShowMyOrdersResponseOrders orderId(String orderId) {
     this.orderId = orderId;
     return this;
   }
@@ -82,25 +79,7 @@ public class ShowMyOrderDetailsResponseOrder {
     this.orderId = orderId;
   }
 
-  public ShowMyOrderDetailsResponseOrder tradingPair(TradingPair tradingPair) {
-    this.tradingPair = tradingPair;
-    return this;
-  }
-
-   /**
-   * Get tradingPair
-   * @return tradingPair
-  **/
-  @ApiModelProperty(example = "null", value = "")
-  public TradingPair getTradingPair() {
-    return tradingPair;
-  }
-
-  public void setTradingPair(TradingPair tradingPair) {
-    this.tradingPair = tradingPair;
-  }
-
-  public ShowMyOrderDetailsResponseOrder type(BuyOrSell type) {
+  public ShowMyOrdersResponseOrders type(BuyOrSell type) {
     this.type = type;
     return this;
   }
@@ -118,7 +97,7 @@ public class ShowMyOrderDetailsResponseOrder {
     this.type = type;
   }
 
-  public ShowMyOrderDetailsResponseOrder maxAmount(Float maxAmount) {
+  public ShowMyOrdersResponseOrders maxAmount(Float maxAmount) {
     this.maxAmount = maxAmount;
     return this;
   }
@@ -136,7 +115,7 @@ public class ShowMyOrderDetailsResponseOrder {
     this.maxAmount = maxAmount;
   }
 
-  public ShowMyOrderDetailsResponseOrder minAmount(Float minAmount) {
+  public ShowMyOrdersResponseOrders minAmount(Float minAmount) {
     this.minAmount = minAmount;
     return this;
   }
@@ -154,7 +133,7 @@ public class ShowMyOrderDetailsResponseOrder {
     this.minAmount = minAmount;
   }
 
-  public ShowMyOrderDetailsResponseOrder price(Float price) {
+  public ShowMyOrdersResponseOrders price(Float price) {
     this.price = price;
     return this;
   }
@@ -172,7 +151,7 @@ public class ShowMyOrderDetailsResponseOrder {
     this.price = price;
   }
 
-  public ShowMyOrderDetailsResponseOrder maxVolume(Float maxVolume) {
+  public ShowMyOrdersResponseOrders maxVolume(Float maxVolume) {
     this.maxVolume = maxVolume;
     return this;
   }
@@ -190,7 +169,7 @@ public class ShowMyOrderDetailsResponseOrder {
     this.maxVolume = maxVolume;
   }
 
-  public ShowMyOrderDetailsResponseOrder minVolume(Float minVolume) {
+  public ShowMyOrdersResponseOrders minVolume(Float minVolume) {
     this.minVolume = minVolume;
     return this;
   }
@@ -208,7 +187,7 @@ public class ShowMyOrderDetailsResponseOrder {
     this.minVolume = minVolume;
   }
 
-  public ShowMyOrderDetailsResponseOrder endDatetime(DateTime endDatetime) {
+  public ShowMyOrdersResponseOrders endDatetime(DateTime endDatetime) {
     this.endDatetime = endDatetime;
     return this;
   }
@@ -226,7 +205,7 @@ public class ShowMyOrderDetailsResponseOrder {
     this.endDatetime = endDatetime;
   }
 
-  public ShowMyOrderDetailsResponseOrder newOrderForRemainingAmount(Boolean newOrderForRemainingAmount) {
+  public ShowMyOrdersResponseOrders newOrderForRemainingAmount(Boolean newOrderForRemainingAmount) {
     this.newOrderForRemainingAmount = newOrderForRemainingAmount;
     return this;
   }
@@ -244,7 +223,7 @@ public class ShowMyOrderDetailsResponseOrder {
     this.newOrderForRemainingAmount = newOrderForRemainingAmount;
   }
 
-  public ShowMyOrderDetailsResponseOrder state(Integer state) {
+  public ShowMyOrdersResponseOrders state(Integer state) {
     this.state = state;
     return this;
   }
@@ -262,12 +241,12 @@ public class ShowMyOrderDetailsResponseOrder {
     this.state = state;
   }
 
-  public ShowMyOrderDetailsResponseOrder orderRequirements(List<OrderRequirement> orderRequirements) {
+  public ShowMyOrdersResponseOrders orderRequirements(List<OrderRequirement> orderRequirements) {
     this.orderRequirements = orderRequirements;
     return this;
   }
 
-  public ShowMyOrderDetailsResponseOrder addOrderRequirementsItem(OrderRequirement orderRequirementsItem) {
+  public ShowMyOrdersResponseOrders addOrderRequirementsItem(OrderRequirement orderRequirementsItem) {
     this.orderRequirements.add(orderRequirementsItem);
     return this;
   }
@@ -285,7 +264,7 @@ public class ShowMyOrderDetailsResponseOrder {
     this.orderRequirements = orderRequirements;
   }
 
-  public ShowMyOrderDetailsResponseOrder createdAt(DateTime createdAt) {
+  public ShowMyOrdersResponseOrders createdAt(DateTime createdAt) {
     this.createdAt = createdAt;
     return this;
   }
@@ -312,35 +291,33 @@ public class ShowMyOrderDetailsResponseOrder {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ShowMyOrderDetailsResponseOrder showMyOrderDetailsResponseOrder = (ShowMyOrderDetailsResponseOrder) o;
-    return Objects.equals(this.orderId, showMyOrderDetailsResponseOrder.orderId) &&
-        Objects.equals(this.tradingPair, showMyOrderDetailsResponseOrder.tradingPair) &&
-        Objects.equals(this.type, showMyOrderDetailsResponseOrder.type) &&
-        Objects.equals(this.maxAmount, showMyOrderDetailsResponseOrder.maxAmount) &&
-        Objects.equals(this.minAmount, showMyOrderDetailsResponseOrder.minAmount) &&
-        Objects.equals(this.price, showMyOrderDetailsResponseOrder.price) &&
-        Objects.equals(this.maxVolume, showMyOrderDetailsResponseOrder.maxVolume) &&
-        Objects.equals(this.minVolume, showMyOrderDetailsResponseOrder.minVolume) &&
-        Objects.equals(this.endDatetime, showMyOrderDetailsResponseOrder.endDatetime) &&
-        Objects.equals(this.newOrderForRemainingAmount, showMyOrderDetailsResponseOrder.newOrderForRemainingAmount) &&
-        Objects.equals(this.state, showMyOrderDetailsResponseOrder.state) &&
-        Objects.equals(this.orderRequirements, showMyOrderDetailsResponseOrder.orderRequirements) &&
-        Objects.equals(this.createdAt, showMyOrderDetailsResponseOrder.createdAt);
+    ShowMyOrdersResponseOrders showMyOrdersResponseOrders = (ShowMyOrdersResponseOrders) o;
+    return Objects.equals(this.orderId, showMyOrdersResponseOrders.orderId) &&
+        Objects.equals(this.type, showMyOrdersResponseOrders.type) &&
+        Objects.equals(this.maxAmount, showMyOrdersResponseOrders.maxAmount) &&
+        Objects.equals(this.minAmount, showMyOrdersResponseOrders.minAmount) &&
+        Objects.equals(this.price, showMyOrdersResponseOrders.price) &&
+        Objects.equals(this.maxVolume, showMyOrdersResponseOrders.maxVolume) &&
+        Objects.equals(this.minVolume, showMyOrdersResponseOrders.minVolume) &&
+        Objects.equals(this.endDatetime, showMyOrdersResponseOrders.endDatetime) &&
+        Objects.equals(this.newOrderForRemainingAmount, showMyOrdersResponseOrders.newOrderForRemainingAmount) &&
+        Objects.equals(this.state, showMyOrdersResponseOrders.state) &&
+        Objects.equals(this.orderRequirements, showMyOrdersResponseOrders.orderRequirements) &&
+        Objects.equals(this.createdAt, showMyOrdersResponseOrders.createdAt);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(orderId, tradingPair, type, maxAmount, minAmount, price, maxVolume, minVolume, endDatetime, newOrderForRemainingAmount, state, orderRequirements, createdAt);
+    return Objects.hash(orderId, type, maxAmount, minAmount, price, maxVolume, minVolume, endDatetime, newOrderForRemainingAmount, state, orderRequirements, createdAt);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ShowMyOrderDetailsResponseOrder {\n");
+    sb.append("class ShowMyOrdersResponseOrders {\n");
     
     sb.append("    orderId: ").append(toIndentedString(orderId)).append("\n");
-    sb.append("    tradingPair: ").append(toIndentedString(tradingPair)).append("\n");
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("    maxAmount: ").append(toIndentedString(maxAmount)).append("\n");
     sb.append("    minAmount: ").append(toIndentedString(minAmount)).append("\n");

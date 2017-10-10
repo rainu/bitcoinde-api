@@ -22,8 +22,11 @@ import java.util.Objects;
 /**
  * ShowRatesResponse
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-10T20:05:46.672+02:00")
 public class ShowRatesResponse {
+  @JsonProperty("trading_pair")
+  private TradingPair tradingPair = null;
+
   @JsonProperty("rates")
   private ShowRatesResponseRates rates = null;
 
@@ -32,6 +35,24 @@ public class ShowRatesResponse {
 
   @JsonProperty("credits")
   private Integer credits = null;
+
+  public ShowRatesResponse tradingPair(TradingPair tradingPair) {
+    this.tradingPair = tradingPair;
+    return this;
+  }
+
+   /**
+   * Get tradingPair
+   * @return tradingPair
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public TradingPair getTradingPair() {
+    return tradingPair;
+  }
+
+  public void setTradingPair(TradingPair tradingPair) {
+    this.tradingPair = tradingPair;
+  }
 
   public ShowRatesResponse rates(ShowRatesResponseRates rates) {
     this.rates = rates;
@@ -102,14 +123,15 @@ public class ShowRatesResponse {
       return false;
     }
     ShowRatesResponse showRatesResponse = (ShowRatesResponse) o;
-    return Objects.equals(this.rates, showRatesResponse.rates) &&
+    return Objects.equals(this.tradingPair, showRatesResponse.tradingPair) &&
+        Objects.equals(this.rates, showRatesResponse.rates) &&
         Objects.equals(this.errors, showRatesResponse.errors) &&
         Objects.equals(this.credits, showRatesResponse.credits);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(rates, errors, credits);
+    return Objects.hash(tradingPair, rates, errors, credits);
   }
 
 
@@ -118,6 +140,7 @@ public class ShowRatesResponse {
     StringBuilder sb = new StringBuilder();
     sb.append("class ShowRatesResponse {\n");
     
+    sb.append("    tradingPair: ").append(toIndentedString(tradingPair)).append("\n");
     sb.append("    rates: ").append(toIndentedString(rates)).append("\n");
     sb.append("    errors: ").append(toIndentedString(errors)).append("\n");
     sb.append("    credits: ").append(toIndentedString(credits)).append("\n");

@@ -40,10 +40,10 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-10T20:05:46.672+02:00")
 public class ApiClient {
   private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
-  private String basePath = "https://api.bitcoin.de/v1";
+  private String basePath = "https://api.bitcoin.de/v2";
   private boolean debugging = false;
   private int connectionTimeout = 0;
 
@@ -630,6 +630,7 @@ public class ApiClient {
     // Not using `.target(this.basePath).path(path)` below,
     // to support (constant) query string in `path`, e.g. "/posts?draft=1"
     WebTarget target = httpClient.target(this.basePath + path);
+    target.property(ClientProperties.FOLLOW_REDIRECTS, Boolean.FALSE);
 
     if (queryParams != null) {
       for (Pair queryParam : queryParams) {

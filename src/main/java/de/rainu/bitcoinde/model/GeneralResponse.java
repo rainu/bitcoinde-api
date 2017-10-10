@@ -22,13 +22,16 @@ import java.util.Objects;
 /**
  * GeneralResponse
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-10T20:05:46.672+02:00")
 public class GeneralResponse {
   @JsonProperty("errors")
   private List<Error> errors = new ArrayList<Error>();
 
   @JsonProperty("credits")
   private Integer credits = null;
+
+  @JsonProperty("maintenance")
+  private List<Maintenance> maintenance = new ArrayList<Maintenance>();
 
   public GeneralResponse errors(List<Error> errors) {
     this.errors = errors;
@@ -71,6 +74,29 @@ public class GeneralResponse {
     this.credits = credits;
   }
 
+  public GeneralResponse maintenance(List<Maintenance> maintenance) {
+    this.maintenance = maintenance;
+    return this;
+  }
+
+  public GeneralResponse addMaintenanceItem(Maintenance maintenanceItem) {
+    this.maintenance.add(maintenanceItem);
+    return this;
+  }
+
+   /**
+   * Get maintenance
+   * @return maintenance
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public List<Maintenance> getMaintenance() {
+    return maintenance;
+  }
+
+  public void setMaintenance(List<Maintenance> maintenance) {
+    this.maintenance = maintenance;
+  }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -82,12 +108,13 @@ public class GeneralResponse {
     }
     GeneralResponse generalResponse = (GeneralResponse) o;
     return Objects.equals(this.errors, generalResponse.errors) &&
-        Objects.equals(this.credits, generalResponse.credits);
+        Objects.equals(this.credits, generalResponse.credits) &&
+        Objects.equals(this.maintenance, generalResponse.maintenance);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(errors, credits);
+    return Objects.hash(errors, credits, maintenance);
   }
 
 
@@ -98,6 +125,7 @@ public class GeneralResponse {
     
     sb.append("    errors: ").append(toIndentedString(errors)).append("\n");
     sb.append("    credits: ").append(toIndentedString(credits)).append("\n");
+    sb.append("    maintenance: ").append(toIndentedString(maintenance)).append("\n");
     sb.append("}");
     return sb.toString();
   }

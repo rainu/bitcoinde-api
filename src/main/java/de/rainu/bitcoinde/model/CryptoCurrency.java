@@ -16,19 +16,19 @@ package de.rainu.bitcoinde.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
- * Handelspaare
+ * Kryptowährung
  */
-public enum TradingPair {
+public enum CryptoCurrency {
   
-  BTCEUR("btceur"),
+  BITCOIN("btc"),
   
-  BCHEUR("bcheur"),
+  BITCOIN_CASH("bch"),
   
-  ETHEUR("etheur");
+  ETHEREUM("eth");
 
   private String value;
 
-  TradingPair(String value) {
+  CryptoCurrency(String value) {
     this.value = value;
   }
 
@@ -38,8 +38,8 @@ public enum TradingPair {
   }
 
   @JsonCreator
-  public static TradingPair fromValue(String text) {
-    for (TradingPair b : TradingPair.values()) {
+  public static CryptoCurrency fromValue(String text) {
+    for (CryptoCurrency b : CryptoCurrency.values()) {
       if (String.valueOf(b.value).equals(text)) {
         return b;
       }

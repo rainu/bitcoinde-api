@@ -22,10 +22,10 @@ import java.util.Objects;
 /**
  * ShowMyOrdersResponse
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-10T20:05:46.672+02:00")
 public class ShowMyOrdersResponse {
   @JsonProperty("orders")
-  private List<ShowMyOrderDetailsResponseOrder> orders = new ArrayList<ShowMyOrderDetailsResponseOrder>();
+  private List<ShowMyOrdersResponseOrders> orders = new ArrayList<ShowMyOrdersResponseOrders>();
 
   @JsonProperty("page")
   private Page page = null;
@@ -36,12 +36,12 @@ public class ShowMyOrdersResponse {
   @JsonProperty("credits")
   private Integer credits = null;
 
-  public ShowMyOrdersResponse orders(List<ShowMyOrderDetailsResponseOrder> orders) {
+  public ShowMyOrdersResponse orders(List<ShowMyOrdersResponseOrders> orders) {
     this.orders = orders;
     return this;
   }
 
-  public ShowMyOrdersResponse addOrdersItem(ShowMyOrderDetailsResponseOrder ordersItem) {
+  public ShowMyOrdersResponse addOrdersItem(ShowMyOrdersResponseOrders ordersItem) {
     this.orders.add(ordersItem);
     return this;
   }
@@ -51,11 +51,11 @@ public class ShowMyOrdersResponse {
    * @return orders
   **/
   @ApiModelProperty(example = "null", value = "")
-  public List<ShowMyOrderDetailsResponseOrder> getOrders() {
+  public List<ShowMyOrdersResponseOrders> getOrders() {
     return orders;
   }
 
-  public void setOrders(List<ShowMyOrderDetailsResponseOrder> orders) {
+  public void setOrders(List<ShowMyOrdersResponseOrders> orders) {
     this.orders = orders;
   }
 

@@ -13,7 +13,6 @@
 
 package de.rainu.bitcoinde.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
@@ -22,45 +21,13 @@ import org.joda.time.DateTime;
 /**
  * ShowMyTradeDetailsResponseTrade
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-10T20:05:46.672+02:00")
 public class ShowMyTradeDetailsResponseTrade {
   @JsonProperty("trade_id")
   private String tradeId = null;
 
-  /**
-   * Handelspaar
-   */
-  public enum TradingPairEnum {
-    BTCEUR("btceur"),
-
-    ETHEUR("etheur"),
-
-    BCHEUR("bcheur");
-
-    private String value;
-
-    TradingPairEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    @JsonCreator
-    public static TradingPairEnum fromValue(String text) {
-      for (TradingPairEnum b : TradingPairEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
   @JsonProperty("trading_pair")
-  private TradingPairEnum tradingPair = null;
+  private TradingPair tradingPair = null;
 
   @JsonProperty("type")
   private BuyOrSell type = null;
@@ -92,42 +59,8 @@ public class ShowMyTradeDetailsResponseTrade {
   @JsonProperty("state")
   private Integer state = null;
 
-  /**
-   * Bewertung vom Handelspartner
-   */
-  public enum MyRatingForTradingPartnerEnum {
-    PENDING("pending"),
-    
-    NEGATIVE("negative"),
-    
-    NEUTRAL("neutral"),
-    
-    POSITIVE("positive");
-
-    private String value;
-
-    MyRatingForTradingPartnerEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    @JsonCreator
-    public static MyRatingForTradingPartnerEnum fromValue(String text) {
-      for (MyRatingForTradingPartnerEnum b : MyRatingForTradingPartnerEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
   @JsonProperty("my_rating_for_trading_partner")
-  private MyRatingForTradingPartnerEnum myRatingForTradingPartner = null;
+  private TradingPartnerRating myRatingForTradingPartner = null;
 
   @JsonProperty("trading_partner_information")
   private TradingPartner tradingPartnerInformation = null;
@@ -162,21 +95,21 @@ public class ShowMyTradeDetailsResponseTrade {
     this.tradeId = tradeId;
   }
 
-  public ShowMyTradeDetailsResponseTrade tradingPair(TradingPairEnum tradingPair) {
+  public ShowMyTradeDetailsResponseTrade tradingPair(TradingPair tradingPair) {
     this.tradingPair = tradingPair;
     return this;
   }
 
    /**
-   * Handelspaar
+   * Get tradingPair
    * @return tradingPair
   **/
-  @ApiModelProperty(example = "null", value = "Handelspaar")
-  public TradingPairEnum getTradingPair() {
+  @ApiModelProperty(example = "null", value = "")
+  public TradingPair getTradingPair() {
     return tradingPair;
   }
 
-  public void setTradingPair(TradingPairEnum tradingPair) {
+  public void setTradingPair(TradingPair tradingPair) {
     this.tradingPair = tradingPair;
   }
 
@@ -360,7 +293,7 @@ public class ShowMyTradeDetailsResponseTrade {
     this.state = state;
   }
 
-  public ShowMyTradeDetailsResponseTrade myRatingForTradingPartner(MyRatingForTradingPartnerEnum myRatingForTradingPartner) {
+  public ShowMyTradeDetailsResponseTrade myRatingForTradingPartner(TradingPartnerRating myRatingForTradingPartner) {
     this.myRatingForTradingPartner = myRatingForTradingPartner;
     return this;
   }
@@ -370,11 +303,11 @@ public class ShowMyTradeDetailsResponseTrade {
    * @return myRatingForTradingPartner
   **/
   @ApiModelProperty(example = "null", value = "Bewertung vom Handelspartner")
-  public MyRatingForTradingPartnerEnum getMyRatingForTradingPartner() {
+  public TradingPartnerRating getMyRatingForTradingPartner() {
     return myRatingForTradingPartner;
   }
 
-  public void setMyRatingForTradingPartner(MyRatingForTradingPartnerEnum myRatingForTradingPartner) {
+  public void setMyRatingForTradingPartner(TradingPartnerRating myRatingForTradingPartner) {
     this.myRatingForTradingPartner = myRatingForTradingPartner;
   }
 

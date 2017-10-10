@@ -22,7 +22,7 @@ import java.util.Objects;
  * Rate-Infos
  */
 @ApiModel(description = "Rate-Infos")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-10T20:05:46.672+02:00")
 public class ShowRatesResponseRates {
   @JsonProperty("rate_weighted")
   private String rateWeighted = null;

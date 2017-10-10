@@ -22,8 +22,11 @@ import java.util.Objects;
 /**
  * ShowPublicTradeHistoryResponse
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-10T20:05:46.672+02:00")
 public class ShowPublicTradeHistoryResponse {
+  @JsonProperty("trading_pair")
+  private TradingPair tradingPair = null;
+
   @JsonProperty("trades")
   private List<ShowPublicTradeHistoryResponseTrades> trades = new ArrayList<ShowPublicTradeHistoryResponseTrades>();
 
@@ -32,6 +35,24 @@ public class ShowPublicTradeHistoryResponse {
 
   @JsonProperty("credits")
   private Integer credits = null;
+
+  public ShowPublicTradeHistoryResponse tradingPair(TradingPair tradingPair) {
+    this.tradingPair = tradingPair;
+    return this;
+  }
+
+   /**
+   * Get tradingPair
+   * @return tradingPair
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public TradingPair getTradingPair() {
+    return tradingPair;
+  }
+
+  public void setTradingPair(TradingPair tradingPair) {
+    this.tradingPair = tradingPair;
+  }
 
   public ShowPublicTradeHistoryResponse trades(List<ShowPublicTradeHistoryResponseTrades> trades) {
     this.trades = trades;
@@ -107,14 +128,15 @@ public class ShowPublicTradeHistoryResponse {
       return false;
     }
     ShowPublicTradeHistoryResponse showPublicTradeHistoryResponse = (ShowPublicTradeHistoryResponse) o;
-    return Objects.equals(this.trades, showPublicTradeHistoryResponse.trades) &&
+    return Objects.equals(this.tradingPair, showPublicTradeHistoryResponse.tradingPair) &&
+        Objects.equals(this.trades, showPublicTradeHistoryResponse.trades) &&
         Objects.equals(this.errors, showPublicTradeHistoryResponse.errors) &&
         Objects.equals(this.credits, showPublicTradeHistoryResponse.credits);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(trades, errors, credits);
+    return Objects.hash(tradingPair, trades, errors, credits);
   }
 
 
@@ -123,6 +145,7 @@ public class ShowPublicTradeHistoryResponse {
     StringBuilder sb = new StringBuilder();
     sb.append("class ShowPublicTradeHistoryResponse {\n");
     
+    sb.append("    tradingPair: ").append(toIndentedString(tradingPair)).append("\n");
     sb.append("    trades: ").append(toIndentedString(trades)).append("\n");
     sb.append("    errors: ").append(toIndentedString(errors)).append("\n");
     sb.append("    credits: ").append(toIndentedString(credits)).append("\n");

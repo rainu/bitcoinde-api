@@ -6,7 +6,7 @@ info:
   license:
     name: "MIT License"
 host: "api.bitcoin.de"
-basePath: "/v1"
+basePath: "/v2"
 tags:
 - name: "orders"
   externalDocs:
@@ -149,6 +149,14 @@ definitions:
       - bcheur #BCH/EUR
       - etheur #ETH/EUR
 
+  CryptoCurrency:
+    type: "string"
+    description: "Kryptowährung"
+    enum: &cryptoCurrency
+      - btc #Bitcoin
+      - bch #"Bitcoin Cash"
+      - eth #Ethereum
+
   TradingPartnerRating:
     type: "string"
     description: "Bewertung vom Handelspartner"
@@ -188,6 +196,11 @@ definitions:
       credits:
         type: "integer"
         description: "Restliches Credit-Kontingent"
+      maintenance:
+        type: "array"
+        items:
+          $ref: "#/definitions/Maintenance"
+
 
   ShowOrderbookResponse:
     type: "object"
@@ -200,12 +213,12 @@ definitions:
             order_id:
               type: "string"
               description: "ID des Angebots"
-            type:
-              $ref: "#/definitions/BuyOrSell"
             trading_pair:
               type: "string"
               enum: *tradingPair
               description: "Handelspaar"
+            type:
+              $ref: "#/definitions/BuyOrSell"
             max_amount:
               type: "number"
               format: "float"
@@ -264,6 +277,8 @@ definitions:
           order_id:
             type: "string"
             description: "ID des Angebots"
+          trading_pair:
+            $ref: "#/definitions/TradingPair"
           type:
             $ref: "#/definitions/BuyOrSell"
           max_amount:
@@ -396,9 +411,7 @@ definitions:
             type: "string"
             description: "ID des Trades"
           trading_pair:
-            type: "string"
-            enum: *tradingPair
-            description: "Handelspaar"
+            $ref: "#/definitions/TradingPair"
           type:
             $ref: "#/definitions/BuyOrSell"
           max_amount:
@@ -593,19 +606,49 @@ definitions:
       data:
         type: "object"
         properties:
-          btc_balance:
-            description: "Infos zur BTC-Balance"
+          balances:
+            description: "Auflistung aller Balances"
             type: "object"
             properties:
-              total_amount:
-                type: "string"
-                description: "Aktuelles BTC-Guthaben"
-              available_amount:
-                type: "string"
-                description: "Aktuell verfügbares BTC-Guthaben"
-              reserved_amount:
-                type: "string"
-                description: "Aktuell reserviertes BTC-Guthaben"
+              btc:
+                description: "Infos zur BTC-Balance"
+                type: "object"
+                properties:
+                  total_amount:
+                    type: "string"
+                    description: "Aktuelles BTC-Guthaben"
+                  available_amount:
+                    type: "string"
+                    description: "Aktuell verfügbares BTC-Guthaben"
+                  reserved_amount:
+                    type: "string"
+                    description: "Aktuell reserviertes BTC-Guthaben"
+              bch:
+                description: "Infos zur BCH-Balance"
+                type: "object"
+                properties:
+                  total_amount:
+                    type: "string"
+                    description: "Aktuelles BCH-Guthaben"
+                  available_amount:
+                    type: "string"
+                    description: "Aktuell verfügbares BCH-Guthaben"
+                  reserved_amount:
+                    type: "string"
+                    description: "Aktuell reserviertes BCH-Guthaben"
+              eth:
+                description: "Infos zur ETH-Balance"
+                type: "object"
+                properties:
+                  total_amount:
+                    type: "string"
+                    description: "Aktuelles ETH-Guthaben"
+                  available_amount:
+                    type: "string"
+                    description: "Aktuell verfügbares ETH-Guthaben"
+                  reserved_amount:
+                    type: "string"
+                    description: "Aktuell reserviertes ETH-Guthaben"
           fidor_reservation:
             description: "Infos zur ggfs. vorhandenen Fidor-Reservierung"
             type: "object"
@@ -626,6 +669,49 @@ definitions:
                 type: "string"
                 format: "date-time"
                 description: "Reservierung gültig bis (Format: 2015-04-07T12:23:04+02:00 gemäß RFC 3339)"
+              allocation:
+                type: "object"
+                description: "Prozentuale Aufteilung des verfügbaren Betrags der Reservierung"
+                properties:
+                  btc:
+                    type: "object"
+                    description: "Infos zur BTC-Aufteilung"
+                    properties:
+                      percent:
+                        type: "string"
+                        description: "Prozentuale Aufteilung der noch verfügbaren Reservierung"
+                      max_eur_volume:
+                        type: "string"
+                        description: "Max. Betrag zur Hervorhebung von Kaufanfragen"
+                      eur_volume_open_orders:
+                        type: "string"
+                        description: "Akt. verwendeter Betrag zur Hervorhebung von Kaufanfragen"
+                  bch:
+                    type: "object"
+                    description: "Infos zur BCH-Aufteilung"
+                    properties:
+                      percent:
+                        type: "string"
+                        description: "Prozentuale Aufteilung der noch verfügbaren Reservierung"
+                      max_eur_volume:
+                        type: "string"
+                        description: "Max. Betrag zur Hervorhebung von Kaufanfragen"
+                      eur_volume_open_orders:
+                        type: "string"
+                        description: "Akt. verwendeter Betrag zur Hervorhebung von Kaufanfragen"
+                  eth:
+                    type: "object"
+                    description: "Infos zur ETH-Aufteilung"
+                    properties:
+                      percent:
+                        type: "string"
+                        description: "Prozentuale Aufteilung der noch verfügbaren Reservierung"
+                      max_eur_volume:
+                        type: "string"
+                        description: "Max. Betrag zur Hervorhebung von Kaufanfragen"
+                      eur_volume_open_orders:
+                        type: "string"
+                        description: "Akt. verwendeter Betrag zur Hervorhebung von Kaufanfragen"
           encrypted_information:
             description: "Verschlüsselte Infos"
             type: "object"
@@ -650,6 +736,8 @@ definitions:
   ShowOrderbookCompactResponse:
     type: "object"
     properties:
+      trading_pair:
+        $ref: "#/definitions/TradingPair"
       orders:
         type: "object"
         description: "Array mit Bids / Asks"
@@ -691,6 +779,8 @@ definitions:
   ShowPublicTradeHistoryResponse:
     type: "object"
     properties:
+      trading_pair:
+        $ref: "#/definitions/TradingPair"
       trades:
         type: "array"
         description: ""
@@ -722,6 +812,8 @@ definitions:
   ShowRatesResponse:
     type: "object"
     properties:
+      trading_pair:
+        $ref: "#/definitions/TradingPair"
       rates:
         type: "object"
         description: "Rate-Infos"
@@ -742,6 +834,26 @@ definitions:
       credits:
         type: "integer"
         description: "Restliches Credit-Kontingent"
+
+  CryptoCurrencySum:
+    type: "object"
+    description: "(Krypto) Währung-Summen"
+    properties:
+      currency:
+        type: "string"
+        description: "(Krypto) Währung"
+        enum:
+        - btc
+        - bch
+        - eth
+        - euro
+      before_fee:
+        type: "string"
+        description: "Summe vor Gebühr"
+      after_fee:
+        type: "string"
+        description: "Summe nach Gebühr"
+
 
   ShowAccountLedgerResponse:
     type: "object"
@@ -769,49 +881,17 @@ definitions:
                 trade_id:
                   type: "string"
                   description: "ID des Trades"
+                trading_pair:
+                  type: "string"
+                  description: "Handelspaar"
+                  enum: *tradingPair
                 price:
                   type: "string"
                   description: "Preis pro Bitcoin in Euro"
-                btc:
-                  type: "object"
-                  description: "BTC-Summen"
-                  properties:
-                    before_fee:
-                      type: "string"
-                      description: "Summe in BTC vor Gebühr"
-                    after_fee:
-                      type: "string"
-                      description: "Summe in BTC nach Gebühr"
-                bch:
-                  type: "object"
-                  description: "BCH-Summen"
-                  properties:
-                    before_fee:
-                      type: "string"
-                      description: "Summe in BCH vor Gebühr"
-                    after_fee:
-                      type: "string"
-                      description: "Summe in BCH nach Gebühr"
-                eth:
-                  type: "object"
-                  description: "ETH-Summen"
-                  properties:
-                    before_fee:
-                      type: "string"
-                      description: "Summe in ETH vor Gebühr"
-                    after_fee:
-                      type: "string"
-                      description: "Summe in ETH nach Gebühr"
-                euro:
-                  type: "object"
-                  description: "Euro-Summen"
-                  properties:
-                    before_fee:
-                      type: "string"
-                      description: "Summe in Euro vor Gebühr"
-                    after_fee:
-                      type: "string"
-                      description: "Summe in Euro nach Gebühr"
+                primary_currency:
+                  $ref: "#/definitions/CryptoCurrencySum"
+                secondary_currency:
+                  $ref: "#/definitions/CryptoCurrencySum"
             cashflow:
               type: "string"
               description: "Zu- / Abgang"
@@ -828,7 +908,7 @@ definitions:
         type: "integer"
         description: "Restliches Credit-Kontingent"
 
-  Error:
+  Maintenance:
     type: "object"
     properties:
       message:
@@ -842,6 +922,16 @@ definitions:
         type: "string"
         format: "date-time"
         description: "Voraussichtliches Ende der Arbeiten (Format: 2015-04-07T12:23:04+02:00 gemäß RFC 3339)"
+
+  Error:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+      code:
+        type: "string"
+      field:
+        type: "string"
 
   Page:
     type: "object"
@@ -908,6 +998,12 @@ paths:
         required: true
         type: "string"
         enum: *buyOrSell
+      - name: "trading_pair"
+        in: "query"
+        description: "Handelspaar"
+        required: true
+        type: "string"
+        enum: *tradingPair
       - name: "amount"
         in: "query"
         description: "Menge der Bitcoins"
@@ -980,6 +1076,12 @@ paths:
       - name: "type"
         type: "string"
         in: "formData"
+        enum: *buyOrSell
+      - name: "trading_pair"
+        type: "string"
+        in: "formData"
+        description: "Handelspaar"
+        enum: *tradingPair
       - name: "max_amount"
         in: "formData"
         type: "number"
@@ -1056,11 +1158,14 @@ paths:
           description: ""
           schema:
             $ref: "#/definitions/ShowMyOrderDetailsResponse"
+        301:
+          description: "Sofern das Angebot z.T. oder komplett bedient wurde, wird der Status-Code 301 erfolgen und ein Location-Header mit dem URI zur Trade-Ressource übergeben."
         default:
           description: "Anfrage konnte nicht erfolgreich durchgeführt werden."
           schema:
             $ref: "#/definitions/GeneralResponse"
 
+  /orders/{order_id}/{trading_pair}:
     delete:
       tags:
         - "orders"
@@ -1071,6 +1176,12 @@ paths:
         in: "path"
         description: "Die id der Order, die gelöscht werden soll."
         type: "string"
+        required: true
+      - name: "trading_pair"
+        in: "path"
+        description: "Handelspaar"
+        type: "string"
+        enum: *tradingPair
         required: true
       responses:
         200:
@@ -1103,6 +1214,12 @@ paths:
         description: "Angebots-Typ"
         required: false
         enum: *buyOrSell
+      - name: "trading_pair"
+        in: "query"
+        type: "string"
+        description: "Handelspaar"
+        required: false
+        enum: *tradingPair
       - name: "state"
         in: "query"
         type: "integer"
@@ -1178,6 +1295,12 @@ paths:
         in: "path"
         type: "string"
         description: "ID des Angebots."
+        required: true
+      - name: "trading_pair"
+        in: "formData"
+        type: "string"
+        enum: *tradingPair
+        description: "Handelspaar"
         required: true
       - name: "type"
         in: "formData"
@@ -1280,6 +1403,13 @@ paths:
       - "orders"
       operationId: "showOrderbookCompact"
       description: "Kauf- und Verkaufsangebote (bids und asks) in kompakter Form."
+      parameters:
+      - name: "trading_pair"
+        in: "query"
+        description: "Handelspaar"
+        type: "string"
+        required: true
+        enum: *tradingPair
       responses:
         200:
           description: "Das kompakte Orderbuch"
@@ -1297,6 +1427,12 @@ paths:
       operationId: "showPublicTradeHistory"
       description: "Erfolgreich abgeschlossene Trades. Wenn kein Parameter gesetzt wird, werden alle erfolgreich abgeschlossenen Trades der letzten 7 Tage zurückgeliefert. Die Liste ist absteigend nach Datum sortiert."
       parameters:
+      - name: "trading_pair"
+        in: "query"
+        type: "string"
+        description: "Handelspaar"
+        required: true
+        enum: *tradingPair
       - name: "since_tid"
         in: "query"
         type: "integer"
@@ -1318,6 +1454,13 @@ paths:
       - "rates"
       operationId: "showRates"
       description: "Abfrage des gewichteten Durchschnittskurses der letzten 3 Stunden und der letzten 12 Stunden."
+      parameters:
+      - name: "trading_pair"
+        in: "query"
+        type: "string"
+        description: "Handelspaar"
+        required: true
+        enum: *tradingPair
       responses:
         200:
           description: ""
@@ -1336,6 +1479,12 @@ paths:
       description: "Abruf des Kontoauszuges
                     Bitte beachten Sie, dass im Kontoauzug nur Transaktionen aufgelistet werden, die bis zum Vortag ausgeführt wurden. Transaktionen von heute sind also erst morgen im Kontoauszug aufgeführt."
       parameters:
+      - name: "currency"
+        in: "query"
+        type: "string"
+        enum: *cryptoCurrency
+        description: "Positions-Typ"
+        required: true
       - name: "type"
         in: "query"
         type: "string"

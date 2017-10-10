@@ -13,34 +13,31 @@
 
 package de.rainu.bitcoinde.model;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.Objects;
 
 /**
  * Tradedetails (nur bei Typ sell/buy)
  */
 @ApiModel(description = "Tradedetails (nur bei Typ sell/buy)")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-09-06T15:27:33.243+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-10T20:05:46.672+02:00")
 public class ShowAccountLedgerResponseTrade {
   @JsonProperty("trade_id")
   private String tradeId = null;
 
+  @JsonProperty("trading_pair")
+  private TradingPair tradingPair = null;
+
   @JsonProperty("price")
   private String price = null;
 
-  @JsonProperty("btc")
-  private ShowAccountLedgerResponseTradeBtc btc = null;
+  @JsonProperty("primary_currency")
+  private CryptoCurrencySum primaryCurrency = null;
 
-  @JsonProperty("bch")
-  private ShowAccountLedgerResponseTradeBch bch = null;
-
-  @JsonProperty("eth")
-  private ShowAccountLedgerResponseTradeEth eth = null;
-
-  @JsonProperty("euro")
-  private ShowAccountLedgerResponseTradeEuro euro = null;
+  @JsonProperty("secondary_currency")
+  private CryptoCurrencySum secondaryCurrency = null;
 
   public ShowAccountLedgerResponseTrade tradeId(String tradeId) {
     this.tradeId = tradeId;
@@ -58,6 +55,24 @@ public class ShowAccountLedgerResponseTrade {
 
   public void setTradeId(String tradeId) {
     this.tradeId = tradeId;
+  }
+
+  public ShowAccountLedgerResponseTrade tradingPair(TradingPair tradingPair) {
+    this.tradingPair = tradingPair;
+    return this;
+  }
+
+   /**
+   * Handelspaar
+   * @return tradingPair
+  **/
+  @ApiModelProperty(example = "null", value = "Handelspaar")
+  public TradingPair getTradingPair() {
+    return tradingPair;
+  }
+
+  public void setTradingPair(TradingPair tradingPair) {
+    this.tradingPair = tradingPair;
   }
 
   public ShowAccountLedgerResponseTrade price(String price) {
@@ -78,81 +93,40 @@ public class ShowAccountLedgerResponseTrade {
     this.price = price;
   }
 
-  public ShowAccountLedgerResponseTrade btc(ShowAccountLedgerResponseTradeBtc btc) {
-    this.btc = btc;
+  public ShowAccountLedgerResponseTrade primaryCurrency(CryptoCurrencySum primaryCurrency) {
+    this.primaryCurrency = primaryCurrency;
     return this;
   }
 
    /**
-   * Get btc
-   * @return btc
+   * Get primaryCurrency
+   * @return primaryCurrency
   **/
   @ApiModelProperty(example = "null", value = "")
-  public ShowAccountLedgerResponseTradeBtc getBtc() {
-    return btc;
+  public CryptoCurrencySum getPrimaryCurrency() {
+    return primaryCurrency;
   }
 
-  public void setBtc(ShowAccountLedgerResponseTradeBtc btc) {
-    this.btc = btc;
+  public void setPrimaryCurrency(CryptoCurrencySum primaryCurrency) {
+    this.primaryCurrency = primaryCurrency;
   }
 
-  public ShowAccountLedgerResponseTrade bch(ShowAccountLedgerResponseTradeBch bch) {
-    this.bch = bch;
-    return this;
-  }
-
-  public ShowAccountLedgerResponseTrade eth(ShowAccountLedgerResponseTradeEth eth) {
-    this.eth = eth;
+  public ShowAccountLedgerResponseTrade secondaryCurrency(CryptoCurrencySum secondaryCurrency) {
+    this.secondaryCurrency = secondaryCurrency;
     return this;
   }
 
    /**
-   * Get eth
-   * @return eth
+   * Get secondaryCurrency
+   * @return secondaryCurrency
   **/
   @ApiModelProperty(example = "null", value = "")
-  public ShowAccountLedgerResponseTradeEth getEth() {
-    return eth;
+  public CryptoCurrencySum getSecondaryCurrency() {
+    return secondaryCurrency;
   }
 
-  public void setEth(ShowAccountLedgerResponseTradeEth eth) {
-    this.eth = eth;
-  }
-
-  public ShowAccountLedgerResponseTrade bch(ShowAccountLedgerResponseTradeEth eth) {
-    this.eth = eth;
-    return this;
-  }
-
-   /**
-   * Get bch
-   * @return bch
-  **/
-  @ApiModelProperty(example = "null", value = "")
-  public ShowAccountLedgerResponseTradeBch getBch() {
-    return bch;
-  }
-
-  public void setBch(ShowAccountLedgerResponseTradeBch bch) {
-    this.bch = bch;
-  }
-
-  public ShowAccountLedgerResponseTrade euro(ShowAccountLedgerResponseTradeEuro euro) {
-    this.euro = euro;
-    return this;
-  }
-
-   /**
-   * Get euro
-   * @return euro
-  **/
-  @ApiModelProperty(example = "null", value = "")
-  public ShowAccountLedgerResponseTradeEuro getEuro() {
-    return euro;
-  }
-
-  public void setEuro(ShowAccountLedgerResponseTradeEuro euro) {
-    this.euro = euro;
+  public void setSecondaryCurrency(CryptoCurrencySum secondaryCurrency) {
+    this.secondaryCurrency = secondaryCurrency;
   }
 
 
@@ -166,15 +140,15 @@ public class ShowAccountLedgerResponseTrade {
     }
     ShowAccountLedgerResponseTrade showAccountLedgerResponseTrade = (ShowAccountLedgerResponseTrade) o;
     return Objects.equals(this.tradeId, showAccountLedgerResponseTrade.tradeId) &&
+        Objects.equals(this.tradingPair, showAccountLedgerResponseTrade.tradingPair) &&
         Objects.equals(this.price, showAccountLedgerResponseTrade.price) &&
-        Objects.equals(this.btc, showAccountLedgerResponseTrade.btc) &&
-        Objects.equals(this.bch, showAccountLedgerResponseTrade.bch) &&
-        Objects.equals(this.euro, showAccountLedgerResponseTrade.euro);
+        Objects.equals(this.primaryCurrency, showAccountLedgerResponseTrade.primaryCurrency) &&
+        Objects.equals(this.secondaryCurrency, showAccountLedgerResponseTrade.secondaryCurrency);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tradeId, price, btc, bch, euro);
+    return Objects.hash(tradeId, tradingPair, price, primaryCurrency, secondaryCurrency);
   }
 
 
@@ -184,10 +158,10 @@ public class ShowAccountLedgerResponseTrade {
     sb.append("class ShowAccountLedgerResponseTrade {\n");
     
     sb.append("    tradeId: ").append(toIndentedString(tradeId)).append("\n");
+    sb.append("    tradingPair: ").append(toIndentedString(tradingPair)).append("\n");
     sb.append("    price: ").append(toIndentedString(price)).append("\n");
-    sb.append("    btc: ").append(toIndentedString(btc)).append("\n");
-    sb.append("    bch: ").append(toIndentedString(bch)).append("\n");
-    sb.append("    euro: ").append(toIndentedString(euro)).append("\n");
+    sb.append("    primaryCurrency: ").append(toIndentedString(primaryCurrency)).append("\n");
+    sb.append("    secondaryCurrency: ").append(toIndentedString(secondaryCurrency)).append("\n");
     sb.append("}");
     return sb.toString();
   }

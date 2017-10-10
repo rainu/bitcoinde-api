@@ -22,8 +22,11 @@ import java.util.Objects;
 /**
  * ShowOrderbookCompactResponse
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-10T20:05:46.672+02:00")
 public class ShowOrderbookCompactResponse {
+  @JsonProperty("trading_pair")
+  private TradingPair tradingPair = null;
+
   @JsonProperty("orders")
   private ShowOrderbookCompactResponseOrders orders = null;
 
@@ -32,6 +35,24 @@ public class ShowOrderbookCompactResponse {
 
   @JsonProperty("credits")
   private Integer credits = null;
+
+  public ShowOrderbookCompactResponse tradingPair(TradingPair tradingPair) {
+    this.tradingPair = tradingPair;
+    return this;
+  }
+
+   /**
+   * Get tradingPair
+   * @return tradingPair
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public TradingPair getTradingPair() {
+    return tradingPair;
+  }
+
+  public void setTradingPair(TradingPair tradingPair) {
+    this.tradingPair = tradingPair;
+  }
 
   public ShowOrderbookCompactResponse orders(ShowOrderbookCompactResponseOrders orders) {
     this.orders = orders;
@@ -102,14 +123,15 @@ public class ShowOrderbookCompactResponse {
       return false;
     }
     ShowOrderbookCompactResponse showOrderbookCompactResponse = (ShowOrderbookCompactResponse) o;
-    return Objects.equals(this.orders, showOrderbookCompactResponse.orders) &&
+    return Objects.equals(this.tradingPair, showOrderbookCompactResponse.tradingPair) &&
+        Objects.equals(this.orders, showOrderbookCompactResponse.orders) &&
         Objects.equals(this.errors, showOrderbookCompactResponse.errors) &&
         Objects.equals(this.credits, showOrderbookCompactResponse.credits);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(orders, errors, credits);
+    return Objects.hash(tradingPair, orders, errors, credits);
   }
 
 
@@ -118,6 +140,7 @@ public class ShowOrderbookCompactResponse {
     StringBuilder sb = new StringBuilder();
     sb.append("class ShowOrderbookCompactResponse {\n");
     
+    sb.append("    tradingPair: ").append(toIndentedString(tradingPair)).append("\n");
     sb.append("    orders: ").append(toIndentedString(orders)).append("\n");
     sb.append("    errors: ").append(toIndentedString(errors)).append("\n");
     sb.append("    credits: ").append(toIndentedString(credits)).append("\n");

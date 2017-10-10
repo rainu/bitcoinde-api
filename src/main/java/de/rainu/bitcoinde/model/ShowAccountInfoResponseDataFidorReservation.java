@@ -23,7 +23,7 @@ import org.joda.time.DateTime;
  * Infos zur ggfs. vorhandenen Fidor-Reservierung
  */
 @ApiModel(description = "Infos zur ggfs. vorhandenen Fidor-Reservierung")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-10T20:05:46.672+02:00")
 public class ShowAccountInfoResponseDataFidorReservation {
   @JsonProperty("total_amount")
   private Float totalAmount = null;
@@ -36,6 +36,9 @@ public class ShowAccountInfoResponseDataFidorReservation {
 
   @JsonProperty("valid_until")
   private DateTime validUntil = null;
+
+  @JsonProperty("allocation")
+  private ShowAccountInfoResponseDataFidorReservationAllocation allocation = null;
 
   public ShowAccountInfoResponseDataFidorReservation totalAmount(Float totalAmount) {
     this.totalAmount = totalAmount;
@@ -109,6 +112,24 @@ public class ShowAccountInfoResponseDataFidorReservation {
     this.validUntil = validUntil;
   }
 
+  public ShowAccountInfoResponseDataFidorReservation allocation(ShowAccountInfoResponseDataFidorReservationAllocation allocation) {
+    this.allocation = allocation;
+    return this;
+  }
+
+   /**
+   * Get allocation
+   * @return allocation
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public ShowAccountInfoResponseDataFidorReservationAllocation getAllocation() {
+    return allocation;
+  }
+
+  public void setAllocation(ShowAccountInfoResponseDataFidorReservationAllocation allocation) {
+    this.allocation = allocation;
+  }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -122,12 +143,13 @@ public class ShowAccountInfoResponseDataFidorReservation {
     return Objects.equals(this.totalAmount, showAccountInfoResponseDataFidorReservation.totalAmount) &&
         Objects.equals(this.availableAmount, showAccountInfoResponseDataFidorReservation.availableAmount) &&
         Objects.equals(this.reservedAt, showAccountInfoResponseDataFidorReservation.reservedAt) &&
-        Objects.equals(this.validUntil, showAccountInfoResponseDataFidorReservation.validUntil);
+        Objects.equals(this.validUntil, showAccountInfoResponseDataFidorReservation.validUntil) &&
+        Objects.equals(this.allocation, showAccountInfoResponseDataFidorReservation.allocation);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(totalAmount, availableAmount, reservedAt, validUntil);
+    return Objects.hash(totalAmount, availableAmount, reservedAt, validUntil, allocation);
   }
 
 
@@ -140,6 +162,7 @@ public class ShowAccountInfoResponseDataFidorReservation {
     sb.append("    availableAmount: ").append(toIndentedString(availableAmount)).append("\n");
     sb.append("    reservedAt: ").append(toIndentedString(reservedAt)).append("\n");
     sb.append("    validUntil: ").append(toIndentedString(validUntil)).append("\n");
+    sb.append("    allocation: ").append(toIndentedString(allocation)).append("\n");
     sb.append("}");
     return sb.toString();
   }

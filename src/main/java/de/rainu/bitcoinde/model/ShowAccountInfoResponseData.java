@@ -20,10 +20,10 @@ import java.util.Objects;
 /**
  * ShowAccountInfoResponseData
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-08-27T15:01:02.402+02:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-10T20:05:46.672+02:00")
 public class ShowAccountInfoResponseData {
-  @JsonProperty("btc_balance")
-  private ShowAccountInfoResponseDataBtcBalance btcBalance = null;
+  @JsonProperty("balances")
+  private ShowAccountInfoResponseDataBalances balances = null;
 
   @JsonProperty("fidor_reservation")
   private ShowAccountInfoResponseDataFidorReservation fidorReservation = null;
@@ -31,22 +31,22 @@ public class ShowAccountInfoResponseData {
   @JsonProperty("encrypted_information")
   private ShowAccountInfoResponseDataEncryptedInformation encryptedInformation = null;
 
-  public ShowAccountInfoResponseData btcBalance(ShowAccountInfoResponseDataBtcBalance btcBalance) {
-    this.btcBalance = btcBalance;
+  public ShowAccountInfoResponseData btcBalances(ShowAccountInfoResponseDataBalances btcBalances) {
+    this.balances = btcBalances;
     return this;
   }
 
    /**
-   * Get btcBalance
-   * @return btcBalance
+   * Get balances
+   * @return balances
   **/
   @ApiModelProperty(example = "null", value = "")
-  public ShowAccountInfoResponseDataBtcBalance getBtcBalance() {
-    return btcBalance;
+  public ShowAccountInfoResponseDataBalances getBalances() {
+    return balances;
   }
 
-  public void setBtcBalance(ShowAccountInfoResponseDataBtcBalance btcBalance) {
-    this.btcBalance = btcBalance;
+  public void setBalances(ShowAccountInfoResponseDataBalances balances) {
+    this.balances = balances;
   }
 
   public ShowAccountInfoResponseData fidorReservation(ShowAccountInfoResponseDataFidorReservation fidorReservation) {
@@ -95,14 +95,14 @@ public class ShowAccountInfoResponseData {
       return false;
     }
     ShowAccountInfoResponseData showAccountInfoResponseData = (ShowAccountInfoResponseData) o;
-    return Objects.equals(this.btcBalance, showAccountInfoResponseData.btcBalance) &&
+    return Objects.equals(this.balances, showAccountInfoResponseData.balances) &&
         Objects.equals(this.fidorReservation, showAccountInfoResponseData.fidorReservation) &&
         Objects.equals(this.encryptedInformation, showAccountInfoResponseData.encryptedInformation);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(btcBalance, fidorReservation, encryptedInformation);
+    return Objects.hash(balances, fidorReservation, encryptedInformation);
   }
 
 
@@ -111,7 +111,7 @@ public class ShowAccountInfoResponseData {
     StringBuilder sb = new StringBuilder();
     sb.append("class ShowAccountInfoResponseData {\n");
     
-    sb.append("    btcBalance: ").append(toIndentedString(btcBalance)).append("\n");
+    sb.append("    balances: ").append(toIndentedString(balances)).append("\n");
     sb.append("    fidorReservation: ").append(toIndentedString(fidorReservation)).append("\n");
     sb.append("    encryptedInformation: ").append(toIndentedString(encryptedInformation)).append("\n");
     sb.append("}");
