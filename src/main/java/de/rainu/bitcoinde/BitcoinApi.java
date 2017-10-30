@@ -1,6 +1,8 @@
 package de.rainu.bitcoinde;
 
 import de.rainu.bitcoinde.auth.ApiSignatureBuilder;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,8 +62,17 @@ public class BitcoinApi extends ApiClient {
             (oldValue, newValue) -> oldValue,
             LinkedHashMap::new));
 
+    //at this point: form parameters are not serialized (for the signature we need to serialize them)
+    final Map<String, String> serializedFormParameters = formParams.entrySet().stream()
+        .map(e -> new SimpleEntry<String, String>(e.getKey(), parameterToString(e.getValue())))
+        .collect(Collectors.toMap(
+            e -> e.getKey(),
+            e -> e.getValue(),
+            (oldValue, newValue) -> oldValue,
+            HashMap::new));
+
     final String signature = new ApiSignatureBuilder()
-        .buildSignature(method, uri, collectedGetParams, formParams, apiKey, apiSecret, nonce);
+        .buildSignature(method, uri, collectedGetParams, serializedFormParameters, apiKey, apiSecret, nonce);
 
     headerParams.put(HEADER_API_KEY, apiKey);
     headerParams.put(HEADER_API_NONCE, String.valueOf(nonce));

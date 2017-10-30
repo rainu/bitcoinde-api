@@ -32,7 +32,7 @@ public class ApiSignatureBuilder {
    * Es wird die hexadezimale Repräsentation des HMACs in Kleinschreibung benötigt!
    */
   public String buildSignature(String method, String uri,
-      LinkedHashMap<String, Object> getParameters, Map<String, Object> postParameters,
+      LinkedHashMap<String, ?> getParameters, Map<String, ?> postParameters,
       String apiKey, String apiSecret, Long nonce){
 
     String md5mergedPostParameters = "d41d8cd98f00b204e9800998ecf8427e";  //md5 hash of "" (empty string)
@@ -53,20 +53,20 @@ public class ApiSignatureBuilder {
     return hmac;
   }
 
-  private SortedMap<String, Object> sortByName(Map<String, Object> parameter) {
+  private SortedMap<String, Object> sortByName(Map<String, ?> parameter) {
     return parameter.entrySet().stream()
         .sorted(Map.Entry.comparingByKey())
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
             (oldValue, newValue) -> oldValue, TreeMap::new));
   }
 
-  private String concatParamters(Map<String, Object> parameters) {
+  private String concatParamters(Map<String, ?> parameters) {
     return parameters.entrySet().stream()
         .map(this::urlEncode)
         .collect(Collectors.joining("&"));
   }
 
-  private String urlEncode(Entry<String, Object> entry) {
+  private String urlEncode(Entry<String, ?> entry) {
     try {
       return entry.getKey() + "=" + URLEncoder.encode(String.valueOf(entry.getValue()), "UTF-8");
     } catch (UnsupportedEncodingException e) {
