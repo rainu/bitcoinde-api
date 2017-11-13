@@ -6,12 +6,16 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.ws.rs.core.GenericType;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
 public class BitcoinApi extends ApiClient {
+  private static final Logger LOGGER = Logger.getLogger(BitcoinApi.class.getName());
+
   private static final String HEADER_API_KEY = "X-API-KEY";
   private static final String HEADER_API_NONCE = "X-API-NONCE";
   private static final String HEADER_API_SIGNATURE = "X-API-SIGNATURE";
@@ -22,7 +26,7 @@ public class BitcoinApi extends ApiClient {
   public BitcoinApi(final String apiKey, final String apiSecret){
     this.apiKey = apiKey;
     this.apiSecret = apiSecret;
-    this.setDebugging(true);
+    this.getHttpClient().register(new LoggingFilter(LOGGER, true));
   }
 
   @Override
